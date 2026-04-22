@@ -3,20 +3,17 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title inertia>Lexit - Dyslexia Care</title>
+        <meta name="description" content="Platform AI untuk deteksi dini dan terapi disleksia pada anak Indonesia">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <!-- Fonts sudah ada di CSS, tidak perlu tag link tambahan -->
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
         @routes
         @viteReactRefresh
-        @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
+        @vite(['resources/css/app.css', 'resources/js/app.tsx'])
         @inertiaHead
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased bg-[#F7F5F2]">
         @inertia
     </body>
 </html>

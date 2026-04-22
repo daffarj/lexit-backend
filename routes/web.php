@@ -1,27 +1,33 @@
 <?php
+// routes/web.php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\LexScanController;
+use App\Http\Controllers\LexPlayController;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// ==========================================
+// Public Routes — Halaman Statis
+// ==========================================
+Route::get('/', fn() => Inertia::render('Home'))->name('home');
+Route::get('/features', fn() => Inertia::render('Features'))->name('features');
+Route::get('/how-it-works', fn() => Inertia::render('HowItWorks'))->name('how-it-works');
+Route::get('/about', fn() => Inertia::render('About'))->name('about');
+Route::get('/pricing', fn() => Inertia::render('Pricing'))->name('pricing');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// ==========================================
+// LexScan Routes
+// ==========================================
+Route::get('/lexscan', [LexScanController::class, 'index'])->name('lexscan');
+Route::post('/lexscan/analyze', [LexScanController::class, 'analyze'])->name('lexscan.analyze');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// ==========================================
+// LexPlay Routes
+// ==========================================
+Route::get('/lexplay', [LexPlayController::class, 'index'])->name('lexplay');
+Route::post('/lexplay/save-score', [LexPlayController::class, 'saveScore'])->name('lexplay.save-score');
 
+// ==========================================
+// Auth Routes (dari Breeze)
+// ==========================================
 require __DIR__.'/auth.php';
