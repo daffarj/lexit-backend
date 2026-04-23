@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\GeminiService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -50,5 +51,36 @@ class LexScanController extends Controller
                 'error'              => 'Analisis gagal: ' . $e->getMessage(),
             ]);
         }
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        $request->validate([
+            'scanResults'        => 'required|array',
+            'overallScore'       => 'required|integer',
+            'dyslexiaIndicators' => 'nullable|array',
+            'parentFeedback'     => 'nullable|string',
+        ]);
+
+        $letters            = $request->input('scanResults');
+        $overallScore       = $request->input('overallScore');
+        $dyslexiaIndicators = $request->input('dyslexiaIndicators', []);
+        $parentFeedback     = $request->input('parentFeedback');
+        $correctCount       = collect($letters)->where('isCorrect', true)->count();
+        $totalCount         = count($letters);
+
+        $pdf = Pdf::loadView('pdf.lexscan-report', [
+            'letters'            => $letters,
+            'overallScore'       => $overallScore,
+            'dyslexiaIndicators' => $dyslexiaIndicators,
+            'parentFeedback'     => $parentFeedback,
+            'correctCount'       => $correctCount,
+            'totalCount'         => $totalCount,
+            'date'               => now()->locale('id')->translatedFormat('d F Y'),
+        ])->setPaper('a4', 'portrait');
+
+        $filename = 'Laporan-LexScan-' . now()->format('Y-m-d') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }

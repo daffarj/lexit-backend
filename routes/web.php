@@ -20,6 +20,7 @@ Route::get('/pricing', fn() => Inertia::render('Pricing'))->name('pricing');
 // ==========================================
 Route::get('/lexscan', [LexScanController::class, 'index'])->name('lexscan');
 Route::post('/lexscan/analyze', [LexScanController::class, 'analyze'])->name('lexscan.analyze');
+Route::post('/lexscan/download-pdf', [LexScanController::class, 'downloadPdf'])->name('lexscan.download-pdf');
 
 // ==========================================
 // LexPlay Routes
@@ -31,5 +32,3 @@ Route::post('/lexplay/save-score', [LexPlayController::class, 'saveScore'])->nam
 // Auth Routes (dari Breeze)
 // ==========================================
 require __DIR__.'/auth.php';
-
-Route::get('/lexscan/result', [LexScanController::class, 'result'])->name('lexscan.result');

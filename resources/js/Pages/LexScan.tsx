@@ -385,7 +385,92 @@ export default function LexScan({
                                         >
                                             Scan Tulisan Lain
                                         </button>
-                                        <button className="flex-1 px-6 py-4 bg-[#F5A623] text-white rounded-2xl font-bold hover:bg-[#E09420] transition-all shadow-lg flex items-center justify-center gap-2">
+                                        <button
+                                            onClick={() => {
+                                                // Kirim data scan ke backend → terima file PDF
+                                                const form =
+                                                    document.createElement(
+                                                        "form",
+                                                    );
+                                                form.method = "POST";
+                                                form.action = route(
+                                                    "lexscan.download-pdf",
+                                                );
+
+                                                // CSRF token
+                                                const csrf =
+                                                    document.createElement(
+                                                        "input",
+                                                    );
+                                                csrf.type = "hidden";
+                                                csrf.name = "_token";
+                                                csrf.value =
+                                                    (
+                                                        document.querySelector(
+                                                            'meta[name="csrf-token"]',
+                                                        ) as HTMLMetaElement
+                                                    )?.content ?? "";
+                                                form.appendChild(csrf);
+
+                                                // Data scan sebagai JSON
+                                                const addField = (
+                                                    name: string,
+                                                    value: string,
+                                                ) => {
+                                                    const input =
+                                                        document.createElement(
+                                                            "input",
+                                                        );
+                                                    input.type = "hidden";
+                                                    input.name = name;
+                                                    input.value = value;
+                                                    form.appendChild(input);
+                                                };
+
+                                                addField(
+                                                    "overallScore",
+                                                    String(overallScore ?? 0),
+                                                );
+                                                addField(
+                                                    "parentFeedback",
+                                                    parentFeedback ?? "",
+                                                );
+
+                                                // scanResults & dyslexiaIndicators sebagai array fields
+                                                scanResults?.forEach((r, i) => {
+                                                    addField(
+                                                        `scanResults[${i}][letter]`,
+                                                        r.letter,
+                                                    );
+                                                    addField(
+                                                        `scanResults[${i}][confidence]`,
+                                                        String(r.confidence),
+                                                    );
+                                                    addField(
+                                                        `scanResults[${i}][isCorrect]`,
+                                                        r.isCorrect ? "1" : "0",
+                                                    );
+                                                    addField(
+                                                        `scanResults[${i}][feedback]`,
+                                                        r.feedback,
+                                                    );
+                                                });
+
+                                                dyslexiaIndicators?.forEach(
+                                                    (ind, i) => {
+                                                        addField(
+                                                            `dyslexiaIndicators[${i}]`,
+                                                            ind,
+                                                        );
+                                                    },
+                                                );
+
+                                                document.body.appendChild(form);
+                                                form.submit();
+                                                document.body.removeChild(form);
+                                            }}
+                                            className="flex-1 px-6 py-4 bg-[#F5A623] text-white rounded-2xl font-bold hover:bg-[#E09420] transition-all shadow-lg flex items-center justify-center gap-2"
+                                        >
                                             <Download size={20} />
                                             Download Laporan
                                         </button>
