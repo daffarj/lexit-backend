@@ -41,6 +41,7 @@ interface Props {
     overallScore: number | null;
     dyslexiaIndicators: string[] | null;
     parentFeedback: string | null;
+    error: string | null;
 }
 
 // ─────────────────────────────────────────
@@ -53,6 +54,7 @@ export default function LexScan({
     overallScore,
     dyslexiaIndicators,
     parentFeedback,
+    error,
 }: Props) {
     // Preview gambar — tetap state lokal karena hanya untuk tampilan
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -87,9 +89,8 @@ export default function LexScan({
     };
 
     const handleScan = () => {
-        // Kirim form ke Laravel controller via POST /lexscan/analyze
-        // `processing` otomatis true saat request berjalan
-        post("/lexscan/analyze", {
+        // POST ke /lexscan/analyze dengan file gambar
+        post(route("lexscan.analyze"), {
             forceFormData: true, // ← wajib untuk upload file
         });
     };
@@ -463,20 +464,65 @@ export default function LexScan({
                                 </div>
                             ) : (
                                 <div className="bg-white rounded-3xl p-12 shadow-xl text-center h-full flex flex-col items-center justify-center">
-                                    <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                                        <Brain
-                                            className="text-gray-400"
-                                            size={64}
-                                        />
-                                    </div>
-                                    <h3 className="text-2xl font-bold text-[#1A2E4A] mb-4">
-                                        Hasil Scan Akan Muncul Di Sini
-                                    </h3>
-                                    <p className="text-[#2D3748] max-w-md">
-                                        Upload foto tulisan anak dan klik "Mulai
-                                        Scan dengan AI" untuk melihat analisis
-                                        detail
-                                    </p>
+                                    {error ? (
+                                        // Tampilkan error dari backend
+                                        <>
+                                            <div className="w-32 h-32 bg-red-100 rounded-full flex items-center justify-center mb-6">
+                                                <AlertCircle
+                                                    className="text-red-400"
+                                                    size={64}
+                                                />
+                                            </div>
+                                            <h3 className="text-2xl font-bold text-red-600 mb-4">
+                                                Scan Gagal
+                                            </h3>
+                                            <p className="text-[#2D3748] max-w-md mb-6">
+                                                {error}
+                                            </p>
+                                            <button
+                                                onClick={handleReset}
+                                                className="px-6 py-3 bg-[#3BBFAD] text-white rounded-2xl font-bold hover:bg-[#2A9989] transition-all"
+                                            >
+                                                Coba Lagi
+                                            </button>
+                                        </>
+                                    ) : processing ? (
+                                        // Loading saat menunggu Gemini
+                                        <>
+                                            <div className="w-32 h-32 bg-[#3BBFAD]/10 rounded-full flex items-center justify-center mb-6">
+                                                <Brain
+                                                    className="text-[#3BBFAD] animate-pulse"
+                                                    size={64}
+                                                />
+                                            </div>
+                                            <h3 className="text-2xl font-bold text-[#1A2E4A] mb-4">
+                                                AI Sedang Menganalisis...
+                                            </h3>
+                                            <p className="text-[#2D3748] max-w-md">
+                                                Gemini AI sedang membaca tulisan
+                                                tangan. Mohon tunggu sekitar
+                                                5–15 detik.
+                                            </p>
+                                        </>
+                                    ) : (
+                                        // State awal — belum ada hasil
+                                        <>
+                                            <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                                                <Brain
+                                                    className="text-gray-400"
+                                                    size={64}
+                                                />
+                                            </div>
+                                            <h3 className="text-2xl font-bold text-[#1A2E4A] mb-4">
+                                                Hasil Scan Akan Muncul Di Sini
+                                            </h3>
+                                            <p className="text-[#2D3748] max-w-md">
+                                                Upload foto tulisan anak dan
+                                                klik "Mulai Scan dengan AI"
+                                                untuk melihat analisis detail
+                                            </p>
+                                        </>
+                                    )}
                                 </div>
                             )}
                         </div>

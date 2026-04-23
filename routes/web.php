@@ -31,3 +31,5 @@ Route::post('/lexplay/save-score', [LexPlayController::class, 'saveScore'])->nam
 // Auth Routes (dari Breeze)
 // ==========================================
 require __DIR__.'/auth.php';
+
+Route::get('/lexscan/result', [LexScanController::class, 'result'])->name('lexscan.result');

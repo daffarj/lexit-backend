@@ -1,8 +1,8 @@
 <?php
-// app/Http/Controllers/LexScanController.php
 
 namespace App\Http\Controllers;
 
+use App\Services\GeminiService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -12,28 +12,43 @@ class LexScanController extends Controller
     public function index(): Response
     {
         return Inertia::render('LexScan', [
-            'scanResults' => null,
+            'scanResults'        => null,
+            'overallScore'       => null,
+            'dyslexiaIndicators' => null,
+            'parentFeedback'     => null,
+            'error'              => null,
         ]);
     }
 
-    public function analyze(Request $request)
+    public function analyze(Request $request, GeminiService $gemini): Response
     {
         $request->validate([
-            'image' => 'required|image|max:10240', // max 10MB
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240',
         ]);
 
-        // TODO: Nanti integrasikan GeminiService di sini
-        // Untuk sekarang, kembalikan mock data
-        $mockResult = [
-            'scanResults' => [
-                ['letter' => 'B', 'confidence' => 85, 'isCorrect' => true, 'feedback' => 'Bagus!'],
-                ['letter' => 'D', 'confidence' => 60, 'isCorrect' => false, 'feedback' => 'Perhatikan arah huruf D'],
-            ],
-            'overallScore' => 72,
-            'dyslexiaIndicators' => ['pembalikan b-d'],
-            'parentFeedback' => 'Anak menunjukkan pola umum disleksia pada huruf b dan d.',
-        ];
+        try {
+            $file     = $request->file('image');
+            $base64   = base64_encode(file_get_contents($file->getRealPath()));
+            $mimeType = $file->getMimeType() ?? 'image/jpeg';
 
-        return back()->with($mockResult);
+            $result = $gemini->analyzeHandwriting($base64, $mimeType);
+
+            return Inertia::render('LexScan', [
+                'scanResults'        => $result['letters']            ?? [],
+                'overallScore'       => $result['overallScore']       ?? 0,
+                'dyslexiaIndicators' => $result['dyslexiaIndicators'] ?? [],
+                'parentFeedback'     => $result['parentFeedback']     ?? null,
+                'error'              => null,
+            ]);
+
+        } catch (\Throwable $e) {
+            return Inertia::render('LexScan', [
+                'scanResults'        => null,
+                'overallScore'       => null,
+                'dyslexiaIndicators' => null,
+                'parentFeedback'     => null,
+                'error'              => 'Analisis gagal: ' . $e->getMessage(),
+            ]);
+        }
     }
 }
