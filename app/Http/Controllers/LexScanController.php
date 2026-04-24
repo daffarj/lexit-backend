@@ -1,7 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Models\ScanResult;
 use App\Services\GeminiService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -33,6 +33,27 @@ class LexScanController extends Controller
             $mimeType = $file->getMimeType() ?? 'image/jpeg';
 
             $result = $gemini->analyzeHandwriting($base64, $mimeType);
+
+            // Simpan ke DB jika user sudah login
+            if (auth()->check()) {
+                $user = auth()->user();
+                \Illuminate\Support\Facades\Log::info('LexScan saving', [
+                    'user_id'  => $user->id,
+                    'child_id' => $user->active_child_id,
+                    'score'    => $result['overallScore'] ?? 0,
+                ]);
+                ScanResult::create([
+                    'user_id'             => $user->id,
+                    'child_id'            => $user->active_child_id,
+                    'overall_score'       => $result['overallScore']       ?? 0,
+                    'letters'             => $result['letters']            ?? [],
+                    'dyslexia_indicators' => $result['dyslexiaIndicators'] ?? [],
+                    'parent_feedback'     => $result['parentFeedback']     ?? null,
+                ]);
+                \Illuminate\Support\Facades\Log::info('LexScan saved!');
+            } else {
+                \Illuminate\Support\Facades\Log::warning('LexScan: user NOT authenticated, scan not saved!');
+            }
 
             return Inertia::render('LexScan', [
                 'scanResults'        => $result['letters']            ?? [],
@@ -67,7 +88,6 @@ class LexScanController extends Controller
         $dyslexiaIndicators = $request->input('dyslexiaIndicators', []);
         $parentFeedback     = $request->input('parentFeedback');
         $correctCount       = collect($letters)->where('isCorrect', true)->count();
-        $totalCount         = count($letters);
 
         $pdf = Pdf::loadView('pdf.lexscan-report', [
             'letters'            => $letters,
@@ -75,12 +95,10 @@ class LexScanController extends Controller
             'dyslexiaIndicators' => $dyslexiaIndicators,
             'parentFeedback'     => $parentFeedback,
             'correctCount'       => $correctCount,
-            'totalCount'         => $totalCount,
+            'totalCount'         => count($letters),
             'date'               => now()->locale('id')->translatedFormat('d F Y'),
         ])->setPaper('a4', 'portrait');
 
-        $filename = 'Laporan-LexScan-' . now()->format('Y-m-d') . '.pdf';
-
-        return $pdf->download($filename);
+        return $pdf->download('Laporan-LexScan-' . now()->format('Y-m-d') . '.pdf');
     }
 }

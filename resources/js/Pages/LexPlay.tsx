@@ -185,11 +185,22 @@ export default function LexPlay({
         setIsSavingScore(true);
         router.post(
             "/lexplay/save-score",
-            { score: finalScore },
             {
-                preserveState: true, // jangan reload state React
+                score: finalScore,
+                levelReached: currentLevel + 1, // level yang sudah dicapai
+                attempts: attempts,
+            },
+            {
+                preserveState: true,
                 preserveScroll: true,
                 onFinish: () => setIsSavingScore(false),
+                onSuccess: () => {
+                    // Tampilkan notifikasi sukses singkat jika mau
+                    console.log("Skor berhasil disimpan!");
+                },
+                onError: (errors) => {
+                    console.error("Gagal simpan skor:", errors);
+                },
             },
         );
     };
