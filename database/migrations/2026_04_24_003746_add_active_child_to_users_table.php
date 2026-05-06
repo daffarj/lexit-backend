@@ -5,21 +5,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::table('scan_results', function (Blueprint $table) {
-            // Tambah child_id jika belum ada
-            if (!Schema::hasColumn('scan_results', 'child_id')) {
-                $table->foreignId('child_id')
-                      ->nullable()
-                      ->after('user_id')
-                      ->constrained('children')
-                      ->nullOnDelete();
-            }
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('active_child_id')
+                  ->nullable()
+                  ->after('remember_token')
+                  ->constrained('children')
+                  ->nullOnDelete();
         });
     }
 
     public function down(): void {
-        Schema::table('scan_results', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('child_id');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('active_child_id');
         });
     }
 };

@@ -8,7 +8,6 @@ return new class extends Migration {
         Schema::create('game_sessions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('child_id')->nullable()->constrained('children')->nullOnDelete();
             $table->integer('score');
             $table->integer('level_reached');
             $table->integer('total_attempts')->default(0);
