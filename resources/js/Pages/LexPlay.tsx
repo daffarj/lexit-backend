@@ -87,6 +87,7 @@ export default function LexPlay({
     const [answerSlots, setAnswerSlots] = useState<(string | null)[]>([]);
     const [selectedLetter, setSelectedLetter] = useState<number | null>(null);
     const [isCorrect, setIsCorrect] = useState(false);
+    const [isWrong, setIsWrong] = useState(false);
     const [showHint, setShowHint] = useState(false);
     const [score, setScore] = useState(0);
     const [attempts, setAttempts] = useState(0);
@@ -168,8 +169,16 @@ export default function LexPlay({
 
         if (answer === currentChallenge.word) {
             setIsCorrect(true);
+            setIsWrong(false);
             const pointsEarned = showHint ? 5 : newAttempts === 1 ? 10 : 7;
             setScore((prev) => prev + pointsEarned);
+        } else {
+            // ← TAMBAH: feedback salah
+            setIsWrong(true);
+            setTimeout(() => {
+                setIsWrong(false);
+                resetLevel(); // reset huruf supaya bisa coba lagi
+            }, 1500);
         }
     };
 
@@ -306,7 +315,9 @@ export default function LexPlay({
                                 </div>
 
                                 {/* Answer Slots */}
-                                <div className="flex justify-center gap-3 mb-12">
+                                <div
+                                    className={`flex justify-center gap-3 mb-12 transition-all ${isWrong ? "animate-shake" : ""}`}
+                                >
                                     {answerSlots.map((letter, index) => (
                                         <button
                                             key={index}
@@ -315,7 +326,9 @@ export default function LexPlay({
                                             }
                                             className={`w-16 h-20 md:w-20 md:h-24 rounded-2xl border-4 font-bold text-3xl transition-all ${
                                                 letter
-                                                    ? "bg-[#3BBFAD] border-[#3BBFAD] text-white shadow-lg"
+                                                    ? isWrong
+                                                        ? "bg-red-400 border-red-400 text-white shadow-lg" // ← merah kalau salah
+                                                        : "bg-[#3BBFAD] border-[#3BBFAD] text-white shadow-lg"
                                                     : "bg-white border-[#3BBFAD]/30 border-dashed hover:border-[#3BBFAD] hover:bg-[#3BBFAD]/5"
                                             }`}
                                         >
@@ -323,6 +336,14 @@ export default function LexPlay({
                                         </button>
                                     ))}
                                 </div>
+                                {/* feedback salah */}
+                                {isWrong && (
+                                    <div className="text-center mb-4">
+                                        <p className="text-red-500 font-bold text-lg animate-bounce">
+                                            ❌ Kurang tepat, coba lagi!
+                                        </p>
+                                    </div>
+                                )}
 
                                 {/* Shuffled Letters */}
                                 <div className="mb-8">

@@ -11,7 +11,6 @@ Route::get('/',            fn() => Inertia::render('Home'))->name('home');
 Route::get('/features',    fn() => Inertia::render('Features'))->name('features');
 Route::get('/how-it-works',fn() => Inertia::render('HowItWorks'))->name('how-it-works');
 Route::get('/about',       fn() => Inertia::render('About'))->name('about');
-Route::get('/pricing',     fn() => Inertia::render('Pricing'))->name('pricing');
 
 // LexScan — public (bisa dipakai tanpa login, tapi tanpa simpan ke DB)
 Route::get('/lexscan',              [LexScanController::class, 'index'])->name('lexscan');

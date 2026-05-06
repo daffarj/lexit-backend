@@ -47,7 +47,7 @@ export default function Home() {
 
                                 <div className="flex flex-col sm:flex-row gap-4">
                                     <Link
-                                        href="/pricing"
+                                        href="/lexscan"
                                         className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#3BBFAD] text-white rounded-2xl font-bold text-lg hover:bg-[#F5A623] transition-all shadow-lg hover:shadow-2xl hover:scale-105"
                                     >
                                         Mulai Skrining Gratis
