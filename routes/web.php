@@ -12,10 +12,15 @@ Route::get('/features',    fn() => Inertia::render('Features'))->name('features'
 Route::get('/how-it-works',fn() => Inertia::render('HowItWorks'))->name('how-it-works');
 Route::get('/about',       fn() => Inertia::render('About'))->name('about');
 
-// LexScan — public (bisa dipakai tanpa login, tapi tanpa simpan ke DB)
-Route::get('/lexscan',              [LexScanController::class, 'index'])->name('lexscan');
-Route::post('/lexscan/analyze',     [LexScanController::class, 'analyze'])->name('lexscan.analyze');
-Route::post('/lexscan/download-pdf',[LexScanController::class, 'downloadPdf'])->name('lexscan.download-pdf');
+// LexScan — halaman & download-pdf tetap public
+Route::get('/lexscan',               [LexScanController::class, 'index'])->name('lexscan');
+Route::post('/lexscan/download-pdf', [LexScanController::class, 'downloadPdf'])->name('lexscan.download-pdf');
+
+// LexScan analyze — wajib login agar kuota Gemini tidak bocor ke publik/bot
+// Rate limit: maksimal 10 request per menit per user (throttle:10,1)
+Route::middleware(['auth', 'throttle:10,1'])
+    ->post('/lexscan/analyze', [LexScanController::class, 'analyze'])
+    ->name('lexscan.analyze');
 
 // LexPlay — public
 Route::get('/lexplay',              [LexPlayController::class, 'index'])->name('lexplay');

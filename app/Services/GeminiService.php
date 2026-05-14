@@ -4,6 +4,8 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Http\Client\Response;
 
 class GeminiService
 {
@@ -14,14 +16,21 @@ class GeminiService
 
     // Konfigurasi retry
     private int $maxRetries  = 3;
-    private int $baseDelayMs = 1000; // 1 detik
+    private int $baseDelayMs = 3000; // 3 detik
 
     public function __construct()
     {
         $this->apiKey     = config('services.gemini.api_key');
-        $this->baseUrl    = config('services.gemini.base_url');
+        $this->baseUrl    = rtrim(config('services.gemini.base_url'), '/');
         $this->modelFlash = config('services.gemini.model_flash');
         $this->modelPro   = config('services.gemini.model_pro');
+        
+        // DEBUG SEMENTARA - hapus setelah fix
+        Log::info('Gemini Config', [
+            'api_key' => substr($this->apiKey, 0, 20) . '...',
+            'base_url' => $this->baseUrl,
+            'model_flash' => $this->modelFlash,
+        ]);
     }
 
     /**
@@ -34,33 +43,37 @@ class GeminiService
         $attempt = 0;
 
         while ($attempt <= $this->maxRetries) {
-            $response = Http::timeout(30)->post($url, $payload);
+            $response = Http::timeout(60)
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . $this->apiKey,  // ← INI yang kurang!
+                    'Content-Type'  => 'application/json',
+                    'HTTP-Referer'  => config('app.url'),
+                    'X-Title'       => config('app.name'),
+                ])
+                ->post($url, $payload);
 
-            // Berhasil
             if ($response->successful()) {
                 return $response;
             }
 
-            // Bukan 429 — error lain, langsung lempar
             if ($response->status() !== 429) {
-                Log::error('Gemini error bukan 429', [
+                Log::error('OpenRouter error bukan 429', [
                     'status' => $response->status(),
                     'body'   => $response->body(),
                 ]);
                 return $response;
             }
 
-            // 429 — hitung delay exponential backoff
-            $delayMs = $this->baseDelayMs * pow(2, $attempt); // 1s, 2s, 4s
+            $delayMs = $this->baseDelayMs * pow(2, $attempt);
             $attempt++;
 
             if ($attempt > $this->maxRetries) {
-                Log::warning("Gemini 429: semua {$this->maxRetries} retry habis, menggunakan fallback.");
-                return $response; // kembalikan response 429 terakhir
+                Log::warning("OpenRouter 429: semua {$this->maxRetries} retry habis.");
+                return $response;
             }
 
-            Log::info("Gemini 429: rate limited, retry ke-{$attempt} dalam {$delayMs}ms...");
-            usleep($delayMs * 1000); // convert ms ke microseconds
+            Log::info("OpenRouter 429: retry ke-{$attempt} dalam {$delayMs}ms...");
+            usleep($delayMs * 1000);
         }
 
         return null;
@@ -70,83 +83,141 @@ class GeminiService
      * Analisis foto tulisan tangan anak untuk deteksi disleksia.
      */
     public function analyzeHandwriting(string $base64Image, string $mimeType = 'image/jpeg'): array
-    {
-        $prompt = 'Kamu adalah asisten deteksi disleksia untuk anak Indonesia usia 5-12 tahun. '
-            . 'Analisis foto tulisan tangan ini dan berikan respons HANYA dalam format JSON berikut tanpa markdown: '
-            . '{"letters":[{"letter":"A","confidence":90,"isCorrect":true,"feedback":"Huruf A ditulis dengan baik."}],'
-            . '"overallScore":85,"dyslexiaIndicators":["pembalikan b-d"],"parentFeedback":"Feedback singkat untuk orang tua."} '
-            . 'Aturan: deteksi huruf terbalik (b-d, p-q, n-u), gunakan Bahasa Indonesia ramah, '
-            . 'overallScore 0-100, balas HANYA JSON murni tanpa penjelasan tambahan.';
+{
+    // $base64Image = $this->compressBase64Image($base64Image, $mimeType);
 
-        $url     = "{$this->baseUrl}/models/{$this->modelFlash}:generateContent?key={$this->apiKey}";
-        $payload = [
-            'contents' => [['parts' => [
-                ['inline_data' => ['mime_type' => $mimeType, 'data' => $base64Image]],
-                ['text' => $prompt],
-            ]]],
-            'generationConfig' => [
-                'temperature'      => 0.2,
-                'responseMimeType' => 'application/json',
+    $prompt = 'Kamu adalah asisten deteksi disleksia untuk anak Indonesia usia 5-12 tahun. '
+        . 'Analisis foto tulisan tangan ini dan berikan respons HANYA dalam format JSON berikut tanpa markdown: '
+        . '{"letters":[{"letter":"A","confidence":90,"isCorrect":true,"feedback":"Huruf A ditulis dengan baik."}],'
+        . '"overallScore":85,"dyslexiaIndicators":["pembalikan b-d"],"parentFeedback":"Feedback singkat untuk orang tua."} '
+        . 'Aturan: deteksi huruf terbalik (b-d, p-q, n-u), gunakan Bahasa Indonesia ramah, '
+        . 'overallScore 0-100, balas HANYA JSON murni tanpa penjelasan tambahan.';
+
+    $url     = "{$this->baseUrl}/chat/completions";
+    $payload = [
+        'model'    => $this->modelFlash,
+        'messages' => [[
+            'role'    => 'user',
+            'content' => [
+                [
+                    'type'      => 'image_url',
+                    'image_url' => [
+                        'url' => "data:{$mimeType};base64,{$base64Image}"
+                    ],
+                ],
+                [
+                    'type' => 'text',
+                    'text' => $prompt,
+                ],
             ],
-        ];
+        ]],
+        'temperature' => 0.2,
+    ];
 
-        $response = $this->requestWithBackoff($url, $payload);
+    $response = $this->requestWithBackoff($url, $payload);
 
-        // Semua retry habis atau null → fallback mock
-        if (! $response || $response->status() === 429) {
-            Log::warning('Gemini quota habis setelah semua retry, menggunakan mock data.');
-            return $this->mockAnalysisResult();
-        }
-
-        if ($response->failed()) {
-            throw new \RuntimeException(
-                'Gemini API request gagal: ' . $response->status() . ' - ' . $response->body()
-            );
-        }
-
-        $text    = $response->json('candidates.0.content.parts.0.text');
-        $decoded = json_decode($text, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE || ! $decoded) {
-            Log::error('Gemini response bukan JSON valid', ['raw' => $text]);
-            throw new \RuntimeException('Respons Gemini tidak dapat diproses.');
-        }
-
-        return $decoded;
+    if (! $response || $response->status() === 429) {
+        Log::warning('OpenRouter quota habis, menggunakan mock data.');
+        return $this->mockAnalysisResult();
     }
+
+    if ($response->failed()) {
+        throw new \RuntimeException(
+            'OpenRouter API request gagal: ' . $response->status() . ' - ' . $response->body()
+        );
+    }
+
+    $text = $response->json('choices.0.message.content');
+
+    $text = preg_replace('/```json\s*/', '', $text);
+    $text = preg_replace('/```/', '', $text);
+    $text = trim($text);
+
+    $decoded = json_decode($text, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE || ! $decoded) {
+        Log::error('OpenRouter response bukan JSON valid', [
+            'raw'        => $text,
+            'json_error' => json_last_error_msg()
+        ]);
+        throw new \RuntimeException('Respons OpenRouter tidak dapat diproses.');
+    }
+
+    return $decoded;
+}
+
+// Jika gambar terlalu besar, kompres agar tetap di bawah 4MB (limit Gemini)
+// private function compressBase64Image(string $base64Image, string $mimeType): string
+// {
+//     $imageData = base64_decode($base64Image);
+//     $image     = imagecreatefromstring($imageData);
+    
+//     if (!$image) return $base64Image; // fallback jika gagal
+    
+//     // Resize jika lebih dari 1024px
+//     $width  = imagesx($image);
+//     $height = imagesy($image);
+//     $maxSize = 1024;
+    
+//     if ($width > $maxSize || $height > $maxSize) {
+//         $ratio     = min($maxSize / $width, $maxSize / $height);
+//         $newWidth  = (int)($width * $ratio);
+//         $newHeight = (int)($height * $ratio);
+        
+//         $resized = imagecreatetruecolor($newWidth, $newHeight);
+//         imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+//         $image = $resized;
+//     }
+    
+//     // Output ke buffer dengan quality 75%
+//     ob_start();
+//     imagejpeg($image, null, 75);
+//     $compressed = ob_get_clean();
+//     imagedestroy($image);
+    
+//     return base64_encode($compressed);
+// }
 
     /**
-     * Generate narasi laporan perkembangan anak untuk orang tua.
+     * Generate jawaban.
      */
-    public function generateReport(array $childData): string
-    {
-        $dataJson = json_encode($childData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+public function generateReport(array $childData): string
+{
+    $dataJson = json_encode($childData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
-        $url     = "{$this->baseUrl}/models/{$this->modelPro}:generateContent?key={$this->apiKey}";
-        $payload = [
-            'contents' => [['parts' => [['text'
-                => "Buat laporan disleksia untuk orang tua dalam Bahasa Indonesia. "
-                .  "Data: {$dataJson}. "
-                .  "Panduan: hangat, positif, highlight kemajuan, jelaskan indikator dengan bahasa awam, "
-                .  "berikan 3 rekomendasi terapi di rumah, maksimal 400 kata, tanpa judul.",
-            ]]]],
-            'generationConfig' => ['temperature' => 0.4],
-        ];
+    $url     = "{$this->baseUrl}/chat/completions";
+    $payload = [
+        'model'    => $this->modelPro,
+        'messages' => [[
+            'role'    => 'user',
+            'content' => "Buat laporan disleksia untuk orang tua dalam Bahasa Indonesia. "
+                       . "Data: {$dataJson}. "
+                       . "Panduan: hangat, positif, highlight kemajuan, jelaskan indikator dengan bahasa awam, "
+                       . "berikan 3 rekomendasi terapi di rumah, maksimal 400 kata, tanpa judul.",
+        ]],
+        'temperature' => 0.4,
+    ];
 
-        $response = $this->requestWithBackoff($url, $payload);
+    $response = Http::timeout(30)
+    ->withHeaders([
+        'Authorization' => 'Bearer ' . $this->apiKey,
+        'Content-Type'  => 'application/json',
+        'HTTP-Referer'  => config('app.url'),
+        'X-Title'       => config('app.name'),
+    ])
+    ->post($url, $payload);
 
-        if (! $response || $response->status() === 429) {
-            return '[Mode Demo] Laporan tidak dapat dibuat karena quota Gemini API habis. '
-                 . 'Coba lagi dalam beberapa menit.';
-        }
-
-        if ($response->failed()) {
-            Log::error('Gemini generateReport gagal', ['status' => $response->status()]);
-            return 'Laporan tidak dapat dibuat saat ini. Silakan coba lagi nanti.';
-        }
-
-        return $response->json('candidates.0.content.parts.0.text') ?? '';
+    if (! $response || $response->status() === 429) {
+        return '[Mode Demo] Laporan tidak dapat dibuat karena quota habis.';
     }
+
+    if ($response->failed()) {
+        Log::error('OpenRouter generateReport gagal', ['status' => $response->status()]);
+        return 'Laporan tidak dapat dibuat saat ini. Silakan coba lagi nanti.';
+    }
+
+    return $response->json('choices.0.message.content') ?? '';
+}
 
     /**
      * Mock data untuk development saat Gemini API tidak tersedia / quota habis.

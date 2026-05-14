@@ -36,10 +36,10 @@ return [
     ],
 
     'gemini' => [
-    'api_key'     => env('GEMINI_API_KEY'),
-    'model_flash' => env('GEMINI_MODEL_FLASH', 'gemini-1.5-flash'),
-    'model_pro'   => env('GEMINI_MODEL_PRO',   'gemini-1.5-pro'),
-    'base_url'    => 'https://generativelanguage.googleapis.com/v1beta',
-],
+        'api_key'     => env('GEMINI_API_KEY'),
+        'model_flash' => env('GEMINI_MODEL_FLASH', 'gemini-2.0-flash'),   // ← update model
+        'model_pro'   => env('GEMINI_MODEL_PRO',   'gemini-2.0-flash'),   // ← update model
+        'base_url'    => env('GEMINI_BASE_URL', 'https://generativelanguage.googleapis.com/v1'),  // ← v1beta → v1
+    ],
 
 ];

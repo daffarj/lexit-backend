@@ -5,6 +5,7 @@ use App\Models\ScanResult;
 use App\Services\GeminiService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,26 +35,24 @@ class LexScanController extends Controller
 
             $result = $gemini->analyzeHandwriting($base64, $mimeType);
 
-            // Simpan ke DB jika user sudah login
-            if (auth()->check()) {
-                $user = auth()->user();
-                \Illuminate\Support\Facades\Log::info('LexScan saving', [
-                    'user_id'  => $user->id,
-                    'child_id' => $user->active_child_id,
-                    'score'    => $result['overallScore'] ?? 0,
-                ]);
-                ScanResult::create([
-                    'user_id'             => $user->id,
-                    'child_id'            => $user->active_child_id,
-                    'overall_score'       => $result['overallScore']       ?? 0,
-                    'letters'             => $result['letters']            ?? [],
-                    'dyslexia_indicators' => $result['dyslexiaIndicators'] ?? [],
-                    'parent_feedback'     => $result['parentFeedback']     ?? null,
-                ]);
-                \Illuminate\Support\Facades\Log::info('LexScan saved!');
-            } else {
-                \Illuminate\Support\Facades\Log::warning('LexScan: user NOT authenticated, scan not saved!');
-            }
+            // Route sudah dilindungi middleware auth — user pasti sudah login
+            $user = auth()->user();
+            Log::info('LexScan saving', [
+                'user_id'  => $user->id,
+                'child_id' => $user->active_child_id,
+                'score'    => $result['overallScore'] ?? 0,
+            ]);
+
+            ScanResult::create([
+                'user_id'             => $user->id,
+                'child_id'            => $user->active_child_id,
+                'overall_score'       => $result['overallScore']       ?? 0,
+                'letters'             => $result['letters']            ?? [],
+                'dyslexia_indicators' => $result['dyslexiaIndicators'] ?? [],
+                'parent_feedback'     => $result['parentFeedback']     ?? null,
+            ]);
+
+            Log::info('LexScan saved successfully for user ' . $user->id);
 
             return Inertia::render('LexScan', [
                 'scanResults'        => $result['letters']            ?? [],
@@ -64,6 +63,7 @@ class LexScanController extends Controller
             ]);
 
         } catch (\Throwable $e) {
+            Log::error('LexScan analyze error', ['message' => $e->getMessage()]);
             return Inertia::render('LexScan', [
                 'scanResults'        => null,
                 'overallScore'       => null,
