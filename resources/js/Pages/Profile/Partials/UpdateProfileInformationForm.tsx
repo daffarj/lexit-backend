@@ -5,106 +5,51 @@ import TextInput from '@/Components/TextInput';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 
-export default function UpdateProfileInformation({
-    mustVerifyEmail,
-    status,
-    className = '',
-}) {
-    const user = usePage().props.auth.user;
+const F = "'Nunito', sans-serif";
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
-        useForm({
-            name: user.name,
-            email: user.email,
-        });
-
-    const submit = (e) => {
-        e.preventDefault();
-
-        patch(route('profile.update'));
-    };
+export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }: { mustVerifyEmail?: boolean; status?: string; className?: string }) {
+    const user = (usePage().props as any).auth.user;
+    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({ name: user.name, email: user.email });
+    const submit = (e: React.FormEvent) => { e.preventDefault(); patch(route('profile.update')); };
 
     return (
         <section className={className}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">
-                    Profile Information
-                </h2>
+            <div style={{ marginBottom: 20 }}>
+                <h2 style={{ fontSize: 20, fontWeight: 900, color: "#1A1A2E", margin: 0, marginBottom: 6, fontFamily: F }}>Informasi Profil</h2>
+                <p style={{ fontSize: 14, color: "#666", fontWeight: 600, fontFamily: F }}>Perbarui nama dan email akun kamu.</p>
+            </div>
 
-                <p className="mt-1 text-sm text-gray-600">
-                    Update your account's profile information and email address.
-                </p>
-            </header>
-
-            <form onSubmit={submit} className="mt-6 space-y-6">
+            <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
-
-                    <TextInput
-                        id="name"
-                        className="mt-1 block w-full"
-                        value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                        isFocused
-                        autoComplete="name"
-                    />
-
-                    <InputError className="mt-2" message={errors.name} />
+                    <InputLabel htmlFor="name" value="Nama"/>
+                    <TextInput id="name" value={data.name} onChange={e => setData('name', e.target.value)} required isFocused autoComplete="name"/>
+                    <InputError message={errors.name}/>
                 </div>
-
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        className="mt-1 block w-full"
-                        value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                        autoComplete="username"
-                    />
-
-                    <InputError className="mt-2" message={errors.email} />
+                    <InputLabel htmlFor="email" value="Email"/>
+                    <TextInput id="email" type="email" value={data.email} onChange={e => setData('email', e.target.value)} required autoComplete="username"/>
+                    <InputError message={errors.email}/>
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
-                    <div>
-                        <p className="mt-2 text-sm text-gray-800">
-                            Your email address is unverified.
-                            <Link
-                                href={route('verification.send')}
-                                method="post"
-                                as="button"
-                                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                            >
-                                Click here to re-send the verification email.
+                    <div style={{ padding: "12px 16px", background: "#FFF8E1", border: "3px solid #FFE566", borderRadius: 14 }}>
+                        <p style={{ fontSize: 14, color: "#666", fontWeight: 600, fontFamily: F }}>
+                            Email belum terverifikasi.{' '}
+                            <Link href={route('verification.send')} method="post" as="button"
+                                style={{ color: "#FF6B6B", fontWeight: 800, background: "none", border: "none", cursor: "pointer", fontFamily: F, fontSize: 14 }}>
+                                Kirim ulang email verifikasi
                             </Link>
                         </p>
-
                         {status === 'verification-link-sent' && (
-                            <div className="mt-2 text-sm font-medium text-green-600">
-                                A new verification link has been sent to your
-                                email address.
-                            </div>
+                            <p style={{ fontSize: 13, color: "#16A34A", fontWeight: 700, marginTop: 8, fontFamily: F }}>Link verifikasi baru sudah dikirim!</p>
                         )}
                     </div>
                 )}
 
-                <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
-
-                    <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-gray-600">
-                            Saved.
-                        </p>
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                    <PrimaryButton disabled={processing}>{processing ? "Menyimpan..." : "Simpan Perubahan"}</PrimaryButton>
+                    <Transition show={recentlySuccessful} enter="transition ease-in-out" enterFrom="opacity-0" leave="transition ease-in-out" leaveTo="opacity-0">
+                        <p style={{ fontSize: 14, color: "#16A34A", fontWeight: 700, fontFamily: F }}>Tersimpan!</p>
                     </Transition>
                 </div>
             </form>

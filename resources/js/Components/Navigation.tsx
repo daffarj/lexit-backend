@@ -1,14 +1,35 @@
 import { Link, router, usePage } from "@inertiajs/react";
-import {
-    Menu,
-    X,
-    LayoutDashboard,
-    LogOut,
-    Baby,
-    ArrowLeft,
-    User,
-} from "lucide-react";
 import { useState } from "react";
+
+// ─── Inline SVG Animals (no emoji) ───────────────────────────────────────────
+function FoxLogo() {
+    return (
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Body */}
+            <ellipse cx="22" cy="26" rx="13" ry="11" fill="#FF7043"/>
+            {/* Head */}
+            <circle cx="22" cy="15" r="10" fill="#FF7043"/>
+            {/* Ears */}
+            <polygon points="12,10 8,2 16,8" fill="#FF7043"/>
+            <polygon points="32,10 36,2 28,8" fill="#FF7043"/>
+            {/* Inner ears */}
+            <polygon points="12,9 9.5,4 15,8" fill="#FFCCBC"/>
+            <polygon points="32,9 34.5,4 29,8" fill="#FFCCBC"/>
+            {/* Face white patch */}
+            <ellipse cx="22" cy="17" rx="6" ry="5" fill="#FFCCBC"/>
+            {/* Eyes */}
+            <circle cx="19" cy="13" r="1.8" fill="#2C2C2C"/>
+            <circle cx="25" cy="13" r="1.8" fill="#2C2C2C"/>
+            <circle cx="19.6" cy="12.5" r="0.6" fill="white"/>
+            <circle cx="25.6" cy="12.5" r="0.6" fill="white"/>
+            {/* Nose */}
+            <ellipse cx="22" cy="17" rx="1.2" ry="0.8" fill="#2C2C2C"/>
+            {/* Tail */}
+            <path d="M35 30 Q44 24 40 36 Q36 40 32 36" fill="#FF7043"/>
+            <path d="M37 34 Q42 30 39 37" fill="#FFCCBC"/>
+        </svg>
+    );
+}
 
 export default function Navigation() {
     const [isOpen, setIsOpen] = useState(false);
@@ -26,242 +47,224 @@ export default function Navigation() {
     ];
 
     const isActive = (path: string) => url === path;
-
-    const handleLogout = () => {
-        router.post(route("logout"));
-    };
-
-    const handleBackToParent = () => {
-        router.post(route("mode.parent"));
-    };
+    const handleLogout = () => router.post(route("logout"));
+    const handleBackToParent = () => router.post(route("mode.parent"));
 
     return (
         <>
-            {/* ── Child Mode Banner ── */}
+            {/* Child Mode Banner */}
             {auth?.isChildMode && (
-                <div className="bg-[#F5A623] text-white py-2 px-4">
-                    <div className="max-w-7xl mx-auto flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-sm font-semibold">
-                            <Baby size={16} />
-                            Mode Anak:{" "}
-                            <span className="font-bold">
-                                {auth.activeChild?.avatar}{" "}
-                                {auth.activeChild?.name}
-                            </span>
+                <div style={{
+                    background: "linear-gradient(90deg, #FF6B6B 0%, #FF8E53 100%)",
+                    color: "white", padding: "8px 20px",
+                    fontFamily: "'Nunito', 'Fredoka One', sans-serif",
+                }}>
+                    <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 800, fontSize: 14 }}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2C8.5 2 6 4.5 6 7c0 2 1 3.5 2.5 4.5L8 20h8l-.5-8.5C17 10.5 18 9 18 7c0-2.5-2.5-5-6-5z" fill="white" fillOpacity="0.9"/>
+                                <circle cx="10" cy="7" r="1" fill="#FF6B6B"/>
+                                <circle cx="14" cy="7" r="1" fill="#FF6B6B"/>
+                            </svg>
+                            Mode Anak: {auth.activeChild?.name}
                         </div>
-                        <button
-                            onClick={handleBackToParent}
-                            className="flex items-center gap-1.5 text-sm font-bold bg-white/20 hover:bg-white/30 px-3 py-1 rounded-xl transition-all"
-                        >
-                            <ArrowLeft size={14} /> Kembali ke Mode Orang Tua
+                        <button onClick={handleBackToParent} style={{
+                            background: "rgba(255,255,255,0.25)", border: "2px solid rgba(255,255,255,0.5)",
+                            borderRadius: 20, padding: "4px 14px", color: "white",
+                            fontWeight: 800, cursor: "pointer", fontSize: 13,
+                            fontFamily: "'Nunito', sans-serif",
+                        }}>
+                            Kembali ke Mode Orang Tua
                         </button>
                     </div>
                 </div>
             )}
 
-            {/* ── Main Navbar ── */}
-            <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#3BBFAD]/20 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-20">
+            {/* Main Navbar */}
+            <nav style={{
+                position: "sticky", top: 0, zIndex: 50,
+                background: "white",
+                borderBottom: "4px solid #FFE566",
+                boxShadow: "0 4px 0 0 #FFD700, 0 6px 16px rgba(0,0,0,0.08)",
+                fontFamily: "'Nunito', 'Fredoka One', sans-serif",
+            }}>
+                <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 20px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 68 }}>
+
                         {/* Logo */}
-                        <Link
-                            href="/"
-                            className="flex items-center gap-3 group"
-                        >
-                            <img
-                                src="/LEXIT LOGO.svg"
-                                alt="Lexit"
-                                className="h-20 object-contain group-hover:scale-105 transition-transform"
-                            />
+                        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
+                            <FoxLogo />
+                            <div>
+                                <div style={{
+                                    fontSize: 22, fontWeight: 900, color: "#FF6B6B", lineHeight: 1,
+                                    letterSpacing: "-0.5px",
+                                }}>LEXIT</div>
+                                <div style={{ fontSize: 9, color: "#888", fontWeight: 700, letterSpacing: 1.5, lineHeight: 1, textTransform: "uppercase" }}>
+                                    Belajar Bareng!
+                                </div>
+                            </div>
                         </Link>
 
                         {/* Desktop Nav */}
-                        <div className="hidden md:flex items-center gap-8">
+                        <div className="lexit-desktop-nav">
                             {navItems.map((item) => (
                                 <Link
                                     key={item.path}
                                     href={item.path}
-                                    className={`text-base transition-colors relative group ${isActive(item.path) ? "text-[#3BBFAD] font-semibold" : "text-[#2D3748] hover:text-[#3BBFAD]"}`}
+                                    style={{
+                                        padding: "7px 16px",
+                                        borderRadius: 999,
+                                        fontWeight: 700,
+                                        fontSize: 14,
+                                        textDecoration: "none",
+                                        transition: "all 0.15s",
+                                        background: isActive(item.path) ? "#FF6B6B" : "transparent",
+                                        color: isActive(item.path) ? "white" : "#444",
+                                        boxShadow: isActive(item.path) ? "0 3px 0 #CC4444" : "none",
+                                        transform: isActive(item.path) ? "translateY(-1px)" : "none",
+                                    }}
                                 >
                                     {item.label}
-                                    {isActive(item.path) && (
-                                        <span className="absolute -bottom-7 left-0 right-0 h-1 bg-[#3BBFAD] rounded-full" />
-                                    )}
                                 </Link>
                             ))}
                         </div>
 
                         {/* Auth Area */}
-                        <div className="hidden md:flex items-center gap-3">
+                        <div className="lexit-desktop-auth">
                             {auth ? (
-                                // ── Sudah login ──
-                                <div className="relative">
+                                <div style={{ position: "relative" }}>
                                     <button
-                                        onClick={() =>
-                                            setUserMenu(!showUserMenu)
-                                        }
-                                        className="flex items-center gap-2 px-4 py-2 bg-[#F7F5F2] hover:bg-[#3BBFAD]/10 rounded-2xl transition-all"
+                                        onClick={() => setUserMenu(!showUserMenu)}
+                                        style={{
+                                            display: "flex", alignItems: "center", gap: 8,
+                                            padding: "8px 14px", background: "#FFF5F5",
+                                            border: "2px solid #FFCCCC", borderRadius: 999,
+                                            cursor: "pointer", fontFamily: "'Nunito', sans-serif",
+                                            fontWeight: 700, fontSize: 14, color: "#1A1A2E",
+                                        }}
                                     >
-                                        <div className="w-8 h-8 bg-[#3BBFAD] rounded-full flex items-center justify-center text-white text-sm font-bold">
-                                            {auth.isChildMode ? (
-                                                <span>
-                                                    {auth.activeChild?.avatar}
-                                                </span>
-                                            ) : (
-                                                auth.name
-                                                    .charAt(0)
-                                                    .toUpperCase()
-                                            )}
+                                        <div style={{
+                                            width: 32, height: 32, borderRadius: "50%",
+                                            background: "#FF6B6B", display: "flex",
+                                            alignItems: "center", justifyContent: "center",
+                                            color: "white", fontWeight: 900, fontSize: 14,
+                                        }}>
+                                            {auth.name.charAt(0).toUpperCase()}
                                         </div>
-                                        <span className="text-sm font-semibold text-[#1A2E4A]">
-                                            {auth.isChildMode
-                                                ? auth.activeChild?.name
-                                                : auth.name}
-                                        </span>
-                                        <span className="text-xs text-gray-400">
-                                            ▼
-                                        </span>
+                                        {auth.isChildMode ? auth.activeChild?.name : auth.name}
+                                        <span style={{ color: "#aaa", fontSize: 10 }}>▼</span>
                                     </button>
 
                                     {showUserMenu && (
-                                        <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50">
-                                            <div className="px-4 py-2 border-b border-gray-100 mb-1">
-                                                <p className="text-xs text-gray-400">
-                                                    Login sebagai
-                                                </p>
-                                                <p className="text-sm font-bold text-[#1A2E4A]">
-                                                    {auth.name}
-                                                </p>
-                                                <p className="text-xs text-gray-400">
-                                                    {auth.email}
-                                                </p>
+                                        <div style={{
+                                            position: "absolute", right: 0, top: "calc(100% + 8px)",
+                                            background: "white", borderRadius: 20, minWidth: 210,
+                                            boxShadow: "0 8px 0 #FFD700, 0 12px 24px rgba(0,0,0,0.12)",
+                                            border: "3px solid #FFE566", overflow: "hidden", zIndex: 999,
+                                            fontFamily: "'Nunito', sans-serif",
+                                        }}>
+                                            <div style={{ padding: "12px 16px", borderBottom: "2px solid #FFF5CC", background: "#FFFBE6" }}>
+                                                <div style={{ fontSize: 11, color: "#999", fontWeight: 600 }}>Login sebagai</div>
+                                                <div style={{ fontWeight: 800, color: "#1A1A2E" }}>{auth.name}</div>
+                                                <div style={{ fontSize: 12, color: "#aaa" }}>{auth.email}</div>
                                             </div>
-
                                             {!auth.isChildMode && (
-                                                <Link
-                                                    href={route("dashboard")}
-                                                    onClick={() =>
-                                                        setUserMenu(false)
-                                                    }
-                                                    className="flex items-center gap-2 px-4 py-2 text-sm text-[#2D3748] hover:bg-[#3BBFAD]/10 hover:text-[#3BBFAD] transition-all"
-                                                >
-                                                    <LayoutDashboard
-                                                        size={15}
-                                                    />{" "}
+                                                <Link href={route("dashboard")} onClick={() => setUserMenu(false)}
+                                                    style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 16px", color: "#444", fontWeight: 700, textDecoration: "none", fontSize: 14 }}>
                                                     Dashboard
                                                 </Link>
                                             )}
-
                                             {auth.isChildMode && (
-                                                <button
-                                                    onClick={() => {
-                                                        setUserMenu(false);
-                                                        handleBackToParent();
-                                                    }}
-                                                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#F5A623] hover:bg-[#F5A623]/10 transition-all"
-                                                >
-                                                    <ArrowLeft size={15} /> Mode
-                                                    Orang Tua
+                                                <button onClick={() => { setUserMenu(false); handleBackToParent(); }}
+                                                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "12px 16px", color: "#FF8E53", fontWeight: 700, background: "none", border: "none", cursor: "pointer", fontSize: 14, fontFamily: "'Nunito', sans-serif" }}>
+                                                    Mode Orang Tua
                                                 </button>
                                             )}
-
-                                            <button
-                                                onClick={() => {
-                                                    setUserMenu(false);
-                                                    handleLogout();
-                                                }}
-                                                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-all"
-                                            >
-                                                <LogOut size={15} /> Keluar
+                                            <button onClick={() => { setUserMenu(false); handleLogout(); }}
+                                                style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "12px 16px", color: "#FF4444", fontWeight: 700, background: "none", border: "none", cursor: "pointer", fontSize: 14, fontFamily: "'Nunito', sans-serif", borderTop: "2px solid #FFEEEE" }}>
+                                                Keluar
                                             </button>
                                         </div>
                                     )}
                                 </div>
                             ) : (
-                                // ── Belum login ──
                                 <>
-                                    <Link
-                                        href={route("login")}
-                                        className="px-5 py-2.5 text-[#3BBFAD] border-2 border-[#3BBFAD] rounded-2xl font-semibold hover:bg-[#3BBFAD]/10 transition-all text-sm"
-                                    >
+                                    <Link href={route("login")} style={{
+                                        padding: "9px 22px", fontWeight: 800, fontSize: 14,
+                                        textDecoration: "none", color: "#FF6B6B",
+                                        border: "2.5px solid #FF6B6B", borderRadius: 999,
+                                        transition: "all 0.15s", fontFamily: "'Nunito', sans-serif",
+                                    }}>
                                         Masuk
                                     </Link>
-                                    <Link
-                                        href={route("register")}
-                                        className="px-5 py-2.5 bg-[#3BBFAD] text-white rounded-2xl font-semibold hover:bg-[#F5A623] transition-all shadow-lg text-sm"
-                                    >
+                                    <Link href={route("register")} style={{
+                                        padding: "9px 22px", fontWeight: 800, fontSize: 14,
+                                        textDecoration: "none", color: "white",
+                                        background: "#FF6B6B", borderRadius: 999,
+                                        border: "2.5px solid #FF6B6B",
+                                        boxShadow: "0 4px 0 #CC4444",
+                                        transition: "all 0.15s", fontFamily: "'Nunito', sans-serif",
+                                    }}>
                                         Mulai Gratis
                                     </Link>
                                 </>
                             )}
                         </div>
 
-                        {/* Mobile menu button */}
+                        {/* Responsive — controlled entirely via lexit- classes, no Tailwind conflicts */}
+                        <style>{`
+                            .lexit-hamburger    { display: flex !important; flex-direction: column; gap: 4px; }
+                            .lexit-mobile-menu  { display: block !important; }
+                            .lexit-desktop-nav  { display: none !important; }
+                            .lexit-desktop-auth { display: none !important; }
+                            @media (min-width: 768px) {
+                                .lexit-hamburger    { display: none !important; }
+                                .lexit-mobile-menu  { display: none !important; }
+                                .lexit-desktop-nav  { display: flex !important; align-items: center; gap: 4px; }
+                                .lexit-desktop-auth { display: flex !important; align-items: center; gap: 10px; }
+                            }
+                        `}</style>
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="md:hidden p-2 text-[#2D3748] hover:text-[#3BBFAD]"
+                            className="lexit-hamburger"
+                            style={{
+                                background: "#FFF5F5", border: "2px solid #FFCCCC",
+                                borderRadius: 12, padding: "8px 10px",
+                                cursor: "pointer", flexDirection: "column",
+                                gap: 4,
+                            }}
                         >
-                            {isOpen ? <X size={24} /> : <Menu size={24} />}
+                            {[0,1,2].map(i => (
+                                <span key={i} style={{ display: "block", width: 20, height: 2.5, background: "#FF6B6B", borderRadius: 4 }} />
+                            ))}
                         </button>
                     </div>
 
                     {/* Mobile Menu */}
                     {isOpen && (
-                        <div className="md:hidden py-4 border-t border-gray-200">
-                            <div className="flex flex-col gap-2">
+                        <div style={{ paddingBottom: 16, borderTop: "2px solid #FFF5CC" }} className="lexit-mobile-menu">
+                            <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingTop: 12 }}>
                                 {navItems.map((item) => (
-                                    <Link
-                                        key={item.path}
-                                        href={item.path}
-                                        onClick={() => setIsOpen(false)}
-                                        className={`px-4 py-2 rounded-xl transition-colors ${isActive(item.path) ? "bg-[#3BBFAD]/10 text-[#3BBFAD] font-semibold" : "text-[#2D3748] hover:bg-gray-50"}`}
-                                    >
+                                    <Link key={item.path} href={item.path} onClick={() => setIsOpen(false)} style={{
+                                        padding: "10px 16px", borderRadius: 14, fontWeight: 700, fontSize: 14,
+                                        textDecoration: "none",
+                                        background: isActive(item.path) ? "#FF6B6B" : "transparent",
+                                        color: isActive(item.path) ? "white" : "#444",
+                                    }}>
                                         {item.label}
                                     </Link>
                                 ))}
-                                <div className="pt-2 border-t border-gray-100 mt-2 flex flex-col gap-2">
+                                <div style={{ borderTop: "2px dashed #FFEECC", marginTop: 8, paddingTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
                                     {auth ? (
-                                        <>
-                                            {!auth.isChildMode && (
-                                                <Link
-                                                    href={route("dashboard")}
-                                                    onClick={() =>
-                                                        setIsOpen(false)
-                                                    }
-                                                    className="flex items-center gap-2 px-4 py-2.5 bg-[#3BBFAD]/10 text-[#3BBFAD] rounded-xl font-semibold"
-                                                >
-                                                    <LayoutDashboard
-                                                        size={16}
-                                                    />{" "}
-                                                    Dashboard
-                                                </Link>
-                                            )}
-                                            <button
-                                                onClick={() => {
-                                                    setIsOpen(false);
-                                                    handleLogout();
-                                                }}
-                                                className="flex items-center gap-2 px-4 py-2.5 bg-red-50 text-red-500 rounded-xl font-semibold"
-                                            >
-                                                <LogOut size={16} /> Keluar
-                                            </button>
-                                        </>
+                                        <button onClick={() => { setIsOpen(false); handleLogout(); }} style={{
+                                            padding: "10px 16px", background: "#FFF0F0", color: "#FF4444",
+                                            border: "2px solid #FFCCCC", borderRadius: 14, fontWeight: 800,
+                                            cursor: "pointer", fontFamily: "'Nunito', sans-serif", fontSize: 14,
+                                        }}>Keluar</button>
                                     ) : (
                                         <>
-                                            <Link
-                                                href={route("login")}
-                                                onClick={() => setIsOpen(false)}
-                                                className="px-4 py-2.5 border-2 border-[#3BBFAD] text-[#3BBFAD] rounded-xl font-semibold text-center"
-                                            >
-                                                Masuk
-                                            </Link>
-                                            <Link
-                                                href={route("register")}
-                                                onClick={() => setIsOpen(false)}
-                                                className="px-4 py-2.5 bg-[#3BBFAD] text-white rounded-xl font-semibold text-center"
-                                            >
-                                                Mulai Gratis
-                                            </Link>
+                                            <Link href={route("login")} onClick={() => setIsOpen(false)} style={{ padding: "10px 16px", border: "2px solid #FF6B6B", color: "#FF6B6B", borderRadius: 14, fontWeight: 800, textDecoration: "none", textAlign: "center", fontSize: 14 }}>Masuk</Link>
+                                            <Link href={route("register")} onClick={() => setIsOpen(false)} style={{ padding: "10px 16px", background: "#FF6B6B", color: "white", borderRadius: 14, fontWeight: 800, textDecoration: "none", textAlign: "center", boxShadow: "0 3px 0 #CC4444", fontSize: 14 }}>Mulai Gratis</Link>
                                         </>
                                     )}
                                 </div>

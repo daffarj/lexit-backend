@@ -1,9 +1,11 @@
-export default function InputError({ message, className = '', ...props }) {
+interface InputErrorProps {
+    message?: string;
+    className?: string;
+}
+
+export default function InputError({ message, className = '' }: InputErrorProps) {
     return message ? (
-        <p
-            {...props}
-            className={'text-sm text-red-600 ' + className}
-        >
+        <p style={{ color: "#FF4444", fontSize: 13, fontWeight: 700, marginTop: 6, fontFamily: "'Nunito', sans-serif" }} className={className}>
             {message}
         </p>
     ) : null;

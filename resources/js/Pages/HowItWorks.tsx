@@ -1,483 +1,197 @@
-import {
-    ArrowRight,
-    User,
-    CheckCircle,
-    Clock,
-    FileText,
-    Gamepad2,
-    BarChart3,
-} from "lucide-react";
-import { StepIndicator } from "../components/StepIndicator";
+import { ArrowRight, Clock, Gamepad2, FileText } from "lucide-react";
+import { StepIndicator } from "../Components/StepIndicator";
 import { Link } from "@inertiajs/react";
 import AppLayout from "@/Layouts/AppLayout";
+
+const F = "'Nunito', sans-serif";
+
+function FrogSvg() {
+    return (
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+            <ellipse cx="45" cy="62" rx="30" ry="24" fill="#6BCB77"/>
+            <ellipse cx="45" cy="50" rx="26" ry="22" fill="#6BCB77"/>
+            <circle cx="22" cy="30" r="12" fill="#6BCB77"/>
+            <circle cx="68" cy="30" r="12" fill="#6BCB77"/>
+            <circle cx="22" cy="30" r="8" fill="white"/>
+            <circle cx="68" cy="30" r="8" fill="white"/>
+            <circle cx="22" cy="30" r="5" fill="#FFD93D"/>
+            <circle cx="68" cy="30" r="5" fill="#FFD93D"/>
+            <circle cx="22" cy="30" r="3" fill="#1A1A2E"/>
+            <circle cx="68" cy="30" r="3" fill="#1A1A2E"/>
+            <circle cx="23" cy="29" r="1" fill="white"/>
+            <circle cx="69" cy="29" r="1" fill="white"/>
+            <ellipse cx="45" cy="56" rx="12" ry="8" fill="#90EE90"/>
+            <ellipse cx="33" cy="77" rx="10" ry="5" fill="#4AB854"/>
+            <ellipse cx="57" cy="77" rx="10" ry="5" fill="#4AB854"/>
+            <path d="M37 59 Q45 65 53 59" stroke="#4AB854" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        </svg>
+    );
+}
+
+function StoryStep({ color, shadow, bg, border, numLabel, title, children }: {
+    color: string; shadow: string; bg: string; border: string;
+    numLabel: string; title: string; children: React.ReactNode;
+}) {
+    return (
+        <div style={{ display:"flex", gap:20, alignItems:"flex-start" }}>
+            <div style={{ flexShrink:0, width:56, height:56, borderRadius:20, background:color, boxShadow:`0 5px 0 ${shadow}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, fontWeight:900, color:"white" }}>
+                {numLabel}
+            </div>
+            <div style={{ flex:1, background:bg, borderRadius:24, border:`3px solid ${border}`, boxShadow:`0 5px 0 ${shadow}`, padding:"20px 24px" }}>
+                <div style={{ fontWeight:900, fontSize:16, color:"#1A1A2E", marginBottom:8 }}>{title}</div>
+                <div style={{ fontSize:14, color:"#555", lineHeight:1.7, fontWeight:600 }}>{children}</div>
+            </div>
+        </div>
+    );
+}
+
+function QuickCard({ icon, color, shadow, bg, border, title, items }: {
+    icon: React.ReactNode; color: string; shadow: string; bg: string; border: string; title: string; items: string[];
+}) {
+    return (
+        <div style={{ background:bg, borderRadius:28, border:`3px solid ${border}`, boxShadow:`0 7px 0 ${shadow}`, padding:"28px 24px", fontFamily:F }}>
+            <div style={{ width:56, height:56, borderRadius:18, background:color, boxShadow:`0 4px 0 ${shadow}`, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:18 }}>
+                {icon}
+            </div>
+            <h3 style={{ fontSize:18, fontWeight:900, color:"#1A1A2E", marginBottom:14 }}>{title}</h3>
+            <ul style={{ listStyle:"none", padding:0, margin:0, display:"flex", flexDirection:"column", gap:10 }}>
+                {items.map(item => (
+                    <li key={item} style={{ display:"flex", alignItems:"flex-start", gap:10, fontSize:14, color:"#555", fontWeight:600 }}>
+                        <div style={{ width:8, height:8, borderRadius:"50%", background:color, marginTop:5, flexShrink:0 }}/>
+                        {item}
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
 
 export default function HowItWorks() {
     return (
         <AppLayout>
-            <div className="min-h-screen">
-                {/* Hero */}
-                <section className="bg-gradient-to-br from-[#F5A623] to-[#E09420] text-white py-20">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                            Cara Kerja Lexit
+            <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap');
+                * { box-sizing: border-box; }
+                @keyframes float { 0%{transform:translateY(0)} 100%{transform:translateY(-12px)} }
+            `}</style>
+            <div style={{ minHeight:"100vh", fontFamily:F }}>
+
+                {/* ── Hero ── */}
+                <section style={{ background:"linear-gradient(135deg, #FFD93D 0%, #FF8E53 100%)", padding:"72px 24px", textAlign:"center", position:"relative", overflow:"hidden" }}>
+                    {[["6%","18%"],["86%","12%"],["4%","72%"],["88%","74%"]].map(([x,y],i)=>(
+                        <div key={i} style={{ position:"absolute",left:x,top:y,width:50,height:50,borderRadius:"50%",background:"rgba(255,255,255,0.2)",border:"3px solid rgba(255,255,255,0.35)" }}/>
+                    ))}
+                    {[["14%","42%","white","16"],["88%","38%","#FF6B6B","14"]].map(([x,y,c,s],i)=>(
+                        <svg key={i} width={s} height={s} viewBox="0 0 20 20" fill={c} style={{ position:"absolute",left:x,top:y,opacity:0.6 }}>
+                            <polygon points="10,1 12.9,7.5 20,8.2 14.5,13.3 16.2,20 10,16.5 3.8,20 5.5,13.3 0,8.2 7.1,7.5"/>
+                        </svg>
+                    ))}
+                    <div style={{ maxWidth:800, margin:"0 auto", position:"relative", zIndex:2 }}>
+                        <div style={{ display:"inline-flex", alignItems:"center", gap:8, background:"rgba(255,255,255,0.28)", borderRadius:999, padding:"8px 22px", marginBottom:20, border:"2px solid rgba(255,255,255,0.55)" }}>
+                            <span style={{ fontWeight:900, fontSize:14, color:"#92400E" }}>Cara Kerja Lexit</span>
+                        </div>
+                        <h1 style={{ color:"white", fontWeight:900, fontSize:"clamp(2rem,5vw,3.5rem)", lineHeight:1.2, marginBottom:16, textShadow:"0 2px 8px rgba(0,0,0,0.12)" }}>
+                            Mudah, Menyenangkan, Efektif!
                         </h1>
-                        <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
-                            Proses mudah dan menyenangkan untuk mendukung
-                            perkembangan membaca anak Anda
+                        <p style={{ color:"rgba(255,255,255,0.92)", fontSize:17, fontWeight:600, lineHeight:1.7 }}>
+                            Proses mudah dan menyenangkan untuk mendukung perkembangan membaca anak Anda
                         </p>
                     </div>
                 </section>
 
-                {/* Main Steps */}
-                <section className="py-24 bg-white">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="text-center mb-20">
-                            <h2 className="text-4xl md:text-5xl font-bold text-[#1A2E4A] mb-6">
-                                3 Langkah Sederhana
-                            </h2>
-                            <p className="text-xl text-[#2D3748] max-w-3xl mx-auto">
-                                Dari skrining hingga terapi dan monitoring —
-                                semua dalam satu aplikasi
-                            </p>
+                {/* ── 3 Steps ── */}
+                <section style={{ padding:"88px 24px", background:"white" }}>
+                    <div style={{ maxWidth:1000, margin:"0 auto" }}>
+                        <div style={{ textAlign:"center", marginBottom:56 }}>
+                            <h2 style={{ fontSize:"clamp(1.8rem,4vw,2.8rem)", fontWeight:900, color:"#1A1A2E", marginBottom:12 }}>3 Langkah Sederhana</h2>
+                            <p style={{ fontSize:16, color:"#666", fontWeight:600 }}>Dari skrining hingga terapi dan monitoring — semua dalam satu aplikasi</p>
                         </div>
-
-                        <StepIndicator
-                            steps={[
-                                {
-                                    number: 1,
-                                    title: "Skrining dengan LexScan",
-                                    description:
-                                        "Anak mengikuti tes interaktif yang menyenangkan selama 15 menit untuk mendeteksi indikasi disleksia",
-                                },
-                                {
-                                    number: 2,
-                                    title: "Terapi dengan Let's Play",
-                                    description:
-                                        "Bermain game edukatif yang disesuaikan dengan kebutuhan anak berdasarkan hasil skrining",
-                                },
-                                {
-                                    number: 3,
-                                    title: "Pantau dengan Parent Mode",
-                                    description:
-                                        "Lihat progres anak, akses laporan, dan dapatkan rekomendasi personalisasi",
-                                },
-                            ]}
-                        />
+                        <StepIndicator steps={[
+                            { number:1, title:"Skrining dengan LexScan", description:"Anak mengikuti tes interaktif yang menyenangkan selama 15 menit untuk mendeteksi indikasi disleksia" },
+                            { number:2, title:"Terapi dengan Let's Play", description:"Bermain game edukatif yang disesuaikan dengan kebutuhan anak berdasarkan hasil skrining" },
+                            { number:3, title:"Pantau dengan Parent Mode", description:"Lihat progres anak, akses laporan, dan dapatkan rekomendasi personalisasi" },
+                        ]}/>
                     </div>
                 </section>
 
-                {/* Detailed Walkthrough - Persona Story */}
-                <section className="py-24 bg-gradient-to-b from-[#F7F5F2] to-white">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="text-center mb-16">
-                            <div className="inline-flex items-center gap-3 px-5 py-3 bg-[#3BBFAD]/10 rounded-2xl mb-6">
-                                <User className="text-[#3BBFAD]" size={24} />
-                                <span className="font-bold text-lg text-[#3BBFAD]">
-                                    Cerita Pengguna
-                                </span>
+                {/* ── Kisah Farel ── */}
+                <section style={{ padding:"88px 24px", background:"linear-gradient(180deg,#FFFDE7 0%,#F0FFF4 100%)" }}>
+                    <div style={{ maxWidth:900, margin:"0 auto" }}>
+                        <div style={{ textAlign:"center", marginBottom:48 }}>
+                            <div style={{ display:"inline-flex", alignItems:"center", gap:12, background:"#F0FFF4", border:"3px solid #A8E6B0", borderRadius:999, padding:"10px 24px", marginBottom:20, boxShadow:"0 4px 0 #338844" }}>
+                                <div style={{ animation:"float 2.5s ease-in-out infinite alternate" }}>
+                                    <FrogSvg/>
+                                </div>
+                                <span style={{ fontWeight:900, fontSize:14, color:"#338844" }}>Cerita Pengguna</span>
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-bold text-[#1A2E4A] mb-6">
-                                Kisah Farel & Ibu Yuni
-                            </h2>
-                            <p className="text-xl text-[#2D3748] max-w-3xl mx-auto">
-                                Bagaimana Lexit membantu keluarga Indonesia
-                                mengatasi tantangan disleksia
-                            </p>
+                            <h2 style={{ fontSize:"clamp(1.8rem,4vw,2.6rem)", fontWeight:900, color:"#1A1A2E", marginBottom:12 }}>Kisah Farel & Ibu Yuni</h2>
+                            <p style={{ fontSize:16, color:"#666", fontWeight:600 }}>Bagaimana Lexit mengubah cara belajar Farel (8 tahun)</p>
                         </div>
 
-                        {/* Timeline Story */}
-                        <div className="max-w-4xl mx-auto space-y-12">
-                            {/* Step 1 - Problem */}
-                            <div className="flex gap-6 items-start">
-                                <div className="flex-shrink-0 w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center">
-                                    <span className="text-3xl">😟</span>
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-bold text-[#1A2E4A] mb-3">
-                                        Masalah Awal
-                                    </h3>
-                                    <p className="text-lg text-[#2D3748] leading-relaxed">
-                                        Farel (8 tahun) kesulitan membaca
-                                        meskipun sudah ikut les privat. Ibu Yuni
-                                        khawatir tetapi bingung harus kemana —
-                                        biaya konsultasi psikolog mahal dan
-                                        jadwal penuh. Dia mendengar tentang
-                                        disleksia tapi tidak yakin apakah itu
-                                        yang dialami Farel.
-                                    </p>
-                                </div>
-                            </div>
+                        <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+                            <StoryStep numLabel="1" color="#FF6B6B" shadow="#CC4444" bg="#FFF5F5" border="#FFAAAA" title="Ibu Yuni Menyadari Masalah">
+                                Farel (8 tahun) sering menulis huruf terbalik dan kesulitan membaca meski sudah les privat. Gurunya menyarankan bantuan profesional, tapi antrian psikolog panjang dan biaya mahal.
+                            </StoryStep>
+                            <StoryStep numLabel="2" color="#FFD93D" shadow="#CC9900" bg="#FFFDE7" border="#FFE566" title="Menemukan Lexit & Upload Tulisan Tangan">
+                                Ibu Yuni meminta Farel menulis alfabet lalu mengunggah foto ke LexScan — dalam 30 detik, AI Gemini menganalisis dan menemukan pola pembalikan huruf yang konsisten pada b, d, p, dan q.
+                            </StoryStep>
+                            <StoryStep numLabel="3" color="#4D96FF" shadow="#1A5FCC" bg="#EFF6FF" border="#BFDBFE" title="Memulai Terapi dengan Let's Play">
+                                Farel bermain mini-game setiap hari selama 20 menit. Game menyesuaikan tingkat kesulitan otomatis. Dalam 2 minggu, Farel bahkan meminta waktu bermain tambahan!
+                            </StoryStep>
+                            <StoryStep numLabel="4" color="#6BCB77" shadow="#338844" bg="#F0FFF4" border="#A8E6B0" title="Melihat Progres di Parent Mode">
+                                Setelah 3 bulan: kecepatan membaca naik +35%, akurasi kata naik +42%, nilai bahasa Indonesia naik dari 65 menjadi 82!
+                            </StoryStep>
+                        </div>
 
-                            {/* Step 2 - Discovery */}
-                            <div className="flex gap-6 items-start">
-                                <div className="flex-shrink-0 w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center">
-                                    <span className="text-3xl">💡</span>
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-bold text-[#1A2E4A] mb-3">
-                                        Menemukan Lexit
-                                    </h3>
-                                    <p className="text-lg text-[#2D3748] leading-relaxed">
-                                        Ibu Yuni menemukan Lexit melalui
-                                        rekomendasi grup parenting WhatsApp. Dia
-                                        tertarik karena skrining pertama gratis
-                                        dan bisa dilakukan dari rumah. Tidak
-                                        perlu janji temu atau antri — cukup
-                                        download aplikasi dan mulai.
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Step 3 - First Screening */}
-                            <div className="flex gap-6 items-start">
-                                <div className="flex-shrink-0 w-16 h-16 bg-[#3BBFAD]/20 rounded-2xl flex items-center justify-center">
-                                    <CheckCircle
-                                        className="text-[#3BBFAD]"
-                                        size={32}
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-bold text-[#1A2E4A] mb-3">
-                                        Skrining Pertama (15 Menit)
-                                    </h3>
-                                    <div className="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-[#3BBFAD] mb-4">
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <Clock
-                                                className="text-[#3BBFAD]"
-                                                size={24}
-                                            />
-                                            <span className="font-bold text-lg text-[#1A2E4A]">
-                                                Pengalaman Farel
-                                            </span>
-                                        </div>
-                                        <ul className="space-y-3">
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle
-                                                    className="text-[#6FCF97] flex-shrink-0 mt-1"
-                                                    size={20}
-                                                />
-                                                <span className="text-[#2D3748]">
-                                                    Farel merasa seperti bermain
-                                                    game, bukan tes — dia
-                                                    menyukai karakter animasi
-                                                </span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle
-                                                    className="text-[#6FCF97] flex-shrink-0 mt-1"
-                                                    size={20}
-                                                />
-                                                <span className="text-[#2D3748]">
-                                                    Aktivitas beragam: menyusun
-                                                    kata, mengenali huruf,
-                                                    membaca kalimat pendek
-                                                </span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle
-                                                    className="text-[#6FCF97] flex-shrink-0 mt-1"
-                                                    size={20}
-                                                />
-                                                <span className="text-[#2D3748]">
-                                                    AI mencatat pola kesalahan
-                                                    tanpa Farel sadari — tidak
-                                                    ada tekanan
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <p className="text-lg text-[#2D3748] leading-relaxed">
-                                        Setelah 15 menit, Ibu Yuni mendapat
-                                        laporan lengkap: Farel memiliki indikasi
-                                        disleksia ringan-sedang dengan kesulitan
-                                        utama pada pengenalan urutan huruf dan
-                                        kecepatan membaca.
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Step 4 - Understanding Report */}
-                            <div className="flex gap-6 items-start">
-                                <div className="flex-shrink-0 w-16 h-16 bg-[#F5A623]/20 rounded-2xl flex items-center justify-center">
-                                    <FileText
-                                        className="text-[#F5A623]"
-                                        size={32}
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-bold text-[#1A2E4A] mb-3">
-                                        Memahami Hasil
-                                    </h3>
-                                    <div className="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-[#F5A623]">
-                                        <p className="text-lg text-[#2D3748] leading-relaxed mb-4">
-                                            <strong className="text-[#1A2E4A]">
-                                                Laporan yang Ibu Yuni terima
-                                                mencakup:
-                                            </strong>
-                                        </p>
-                                        <div className="grid md:grid-cols-2 gap-4">
-                                            <div className="bg-[#3BBFAD]/5 rounded-xl p-4">
-                                                <div className="font-bold text-[#1A2E4A] mb-2">
-                                                    📊 Skor Risiko
-                                                </div>
-                                                <div className="text-[#2D3748]">
-                                                    Level: Ringan-Sedang
-                                                    (45/100)
-                                                </div>
-                                            </div>
-                                            <div className="bg-[#F5A623]/5 rounded-xl p-4">
-                                                <div className="font-bold text-[#1A2E4A] mb-2">
-                                                    🎯 Area Kesulitan
-                                                </div>
-                                                <div className="text-[#2D3748]">
-                                                    Urutan huruf, kecepatan
-                                                </div>
-                                            </div>
-                                            <div className="bg-[#6FCF97]/5 rounded-xl p-4">
-                                                <div className="font-bold text-[#1A2E4A] mb-2">
-                                                    💪 Area Kuat
-                                                </div>
-                                                <div className="text-[#2D3748]">
-                                                    Pemahaman kata, pendengaran
-                                                </div>
-                                            </div>
-                                            <div className="bg-[#1A2E4A]/5 rounded-xl p-4">
-                                                <div className="font-bold text-[#1A2E4A] mb-2">
-                                                    📝 Rekomendasi
-                                                </div>
-                                                <div className="text-[#2D3748]">
-                                                    Game fonetik, tracing huruf
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Step 5 - Therapy Journey */}
-                            <div className="flex gap-6 items-start">
-                                <div className="flex-shrink-0 w-16 h-16 bg-[#6FCF97]/20 rounded-2xl flex items-center justify-center">
-                                    <Gamepad2
-                                        className="text-[#6FCF97]"
-                                        size={32}
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-bold text-[#1A2E4A] mb-3">
-                                        Terapi Rutin (Let's Play)
-                                    </h3>
-                                    <p className="text-lg text-[#2D3748] leading-relaxed mb-4">
-                                        Farel mulai bermain 20 menit setiap hari
-                                        setelah pulang sekolah. Game yang muncul
-                                        disesuaikan dengan kebutuhannya — lebih
-                                        fokus pada urutan huruf dan kecepatan.
-                                    </p>
-                                    <div className="bg-white rounded-2xl p-6 shadow-lg">
-                                        <div className="font-bold text-[#1A2E4A] mb-4">
-                                            Game Favorit Farel:
-                                        </div>
-                                        <div className="space-y-3">
-                                            <div className="flex items-center gap-3 p-3 bg-[#3BBFAD]/5 rounded-xl">
-                                                <div className="text-2xl">
-                                                    🔤
-                                                </div>
-                                                <div>
-                                                    <div className="font-bold text-[#1A2E4A]">
-                                                        Letter Builder
-                                                    </div>
-                                                    <div className="text-sm text-[#2D3748]">
-                                                        Menyusun huruf jadi kata
-                                                        dengan drag-and-drop
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-3 p-3 bg-[#F5A623]/5 rounded-xl">
-                                                <div className="text-2xl">
-                                                    🎵
-                                                </div>
-                                                <div>
-                                                    <div className="font-bold text-[#1A2E4A]">
-                                                        Sound Match
-                                                    </div>
-                                                    <div className="text-sm text-[#2D3748]">
-                                                        Mencocokkan suara dengan
-                                                        huruf yang benar
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-3 p-3 bg-[#6FCF97]/5 rounded-xl">
-                                                <div className="text-2xl">
-                                                    ✏️
-                                                </div>
-                                                <div>
-                                                    <div className="font-bold text-[#1A2E4A]">
-                                                        Trace & Race
-                                                    </div>
-                                                    <div className="text-sm text-[#2D3748]">
-                                                        Menggambar bentuk huruf
-                                                        dengan jari
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Step 6 - Progress & Results */}
-                            <div className="flex gap-6 items-start">
-                                <div className="flex-shrink-0 w-16 h-16 bg-[#1A2E4A]/20 rounded-2xl flex items-center justify-center">
-                                    <BarChart3
-                                        className="text-[#1A2E4A]"
-                                        size={32}
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-bold text-[#1A2E4A] mb-3">
-                                        Melihat Progres (Parent Mode)
-                                    </h3>
-                                    <p className="text-lg text-[#2D3748] leading-relaxed mb-4">
-                                        Setiap minggu, Ibu Yuni melihat grafik
-                                        progres Farel. Setelah 3 bulan:
-                                    </p>
-                                    <div className="bg-gradient-to-br from-[#3BBFAD] to-[#2A9989] rounded-2xl p-8 text-white shadow-2xl">
-                                        <div className="grid md:grid-cols-3 gap-6 mb-6">
-                                            <div className="text-center">
-                                                <div className="text-5xl font-bold font-mono mb-2">
-                                                    +35%
-                                                </div>
-                                                <div className="text-white/90">
-                                                    Kecepatan Membaca
-                                                </div>
-                                            </div>
-                                            <div className="text-center">
-                                                <div className="text-5xl font-bold font-mono mb-2">
-                                                    +42%
-                                                </div>
-                                                <div className="text-white/90">
-                                                    Akurasi Kata
-                                                </div>
-                                            </div>
-                                            <div className="text-center">
-                                                <div className="text-5xl font-bold font-mono mb-2">
-                                                    90%
-                                                </div>
-                                                <div className="text-white/90">
-                                                    Konsistensi Harian
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="text-center text-lg">
-                                            "Nilai bahasa Indonesia Farel naik
-                                            dari 65 jadi 82! Dia juga lebih
-                                            percaya diri saat presentasi di
-                                            kelas." — Ibu Yuni
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Step 7 - Success */}
-                            <div className="flex gap-6 items-start">
-                                <div className="flex-shrink-0 w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center">
-                                    <span className="text-3xl">🎉</span>
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-bold text-[#1A2E4A] mb-3">
-                                        Hasil Akhir
-                                    </h3>
-                                    <p className="text-lg text-[#2D3748] leading-relaxed">
-                                        Farel tidak hanya lebih baik membaca —
-                                        dia juga lebih suka buku cerita dan
-                                        tidak lagi takut saat disuruh membaca
-                                        keras-keras. Ibu Yuni berbagi cerita di
-                                        grup parenting, dan 5 teman-temannya
-                                        juga mulai pakai Lexit.
-                                    </p>
-                                </div>
-                            </div>
+                        {/* Testimonial */}
+                        <div style={{ marginTop:36, background:"#FF6B6B", borderRadius:28, border:"3px solid #CC4444", boxShadow:"0 7px 0 #CC4444", padding:"32px", textAlign:"center" }}>
+                            <div style={{ fontSize:60, color:"rgba(255,255,255,0.3)", lineHeight:0.7, fontFamily:"Georgia,serif", marginBottom:16 }}>"</div>
+                            <p style={{ fontSize:17, color:"white", fontWeight:700, lineHeight:1.8, marginBottom:16, fontStyle:"italic" }}>
+                                Nilai bahasa Indonesia Farel naik dari 65 jadi 82! Dia juga lebih percaya diri saat presentasi di kelas. Terima kasih Lexit!
+                            </p>
+                            <div style={{ fontWeight:900, color:"#FFE566", fontSize:16 }}>— Ibu Yuni, Jakarta</div>
                         </div>
                     </div>
                 </section>
 
-                {/* Quick Reference */}
-                <section className="py-24 bg-white border-t border-gray-200">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="text-center mb-16">
-                            <h2 className="text-4xl font-bold text-[#1A2E4A] mb-6">
-                                Referensi Cepat
-                            </h2>
-                            <p className="text-xl text-[#2D3748]">
-                                Informasi penting yang perlu Anda ketahui
-                            </p>
+                {/* ── Referensi Cepat ── */}
+                <section style={{ padding:"88px 24px", background:"white" }}>
+                    <div style={{ maxWidth:1000, margin:"0 auto" }}>
+                        <div style={{ textAlign:"center", marginBottom:56 }}>
+                            <h2 style={{ fontSize:"clamp(1.8rem,4vw,2.6rem)", fontWeight:900, color:"#1A1A2E", marginBottom:12 }}>Referensi Cepat</h2>
+                            <p style={{ fontSize:16, color:"#666", fontWeight:600 }}>Informasi penting yang perlu Anda ketahui</p>
                         </div>
-
-                        <div className="grid md:grid-cols-3 gap-8">
-                            <div className="bg-gradient-to-br from-[#3BBFAD]/5 to-white rounded-3xl p-8 border border-[#3BBFAD]/20">
-                                <Clock
-                                    className="text-[#3BBFAD] mb-4"
-                                    size={40}
-                                />
-                                <h3 className="text-2xl font-bold text-[#1A2E4A] mb-4">
-                                    Waktu yang Dibutuhkan
-                                </h3>
-                                <ul className="space-y-3 text-[#2D3748]">
-                                    <li>• Skrining: 15 menit</li>
-                                    <li>• Terapi harian: 20-30 menit</li>
-                                    <li>• Review progres: 5 menit/minggu</li>
-                                </ul>
-                            </div>
-
-                            <div className="bg-gradient-to-br from-[#F5A623]/5 to-white rounded-3xl p-8 border border-[#F5A623]/20">
-                                <Gamepad2
-                                    className="text-[#F5A623] mb-4"
-                                    size={40}
-                                />
-                                <h3 className="text-2xl font-bold text-[#1A2E4A] mb-4">
-                                    Usia yang Cocok
-                                </h3>
-                                <ul className="space-y-3 text-[#2D3748]">
-                                    <li>• Target: 5-12 tahun</li>
-                                    <li>• Optimal: 6-10 tahun</li>
-                                    <li>• Dapat disesuaikan untuk usia lain</li>
-                                </ul>
-                            </div>
-
-                            <div className="bg-gradient-to-br from-[#1A2E4A]/5 to-white rounded-3xl p-8 border border-[#1A2E4A]/20">
-                                <FileText
-                                    className="text-[#1A2E4A] mb-4"
-                                    size={40}
-                                />
-                                <h3 className="text-2xl font-bold text-[#1A2E4A] mb-4">
-                                    Hasil yang Diharapkan
-                                </h3>
-                                <ul className="space-y-3 text-[#2D3748]">
-                                    <li>• Minggu 1: Laporan skrining</li>
-                                    <li>• Bulan 1: Progres awal terlihat</li>
-                                    <li>• Bulan 3: Peningkatan signifikan</li>
-                                </ul>
-                            </div>
+                        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(260px,1fr))", gap:24 }}>
+                            <QuickCard icon={<Clock color="white" size={28}/>} color="#4D96FF" shadow="#1A5FCC" bg="#EFF6FF" border="#BFDBFE" title="Waktu yang Dibutuhkan"
+                                items={["Skrining: 15 menit","Terapi harian: 20–30 menit","Review progres: 5 menit/minggu"]}/>
+                            <QuickCard icon={<Gamepad2 color="#1A1A2E" size={28}/>} color="#FFD93D" shadow="#CC9900" bg="#FFFDE7" border="#FFE566" title="Usia yang Cocok"
+                                items={["Target: 5–12 tahun","Optimal: 6–10 tahun","Dapat disesuaikan untuk usia lain"]}/>
+                            <QuickCard icon={<FileText color="white" size={28}/>} color="#6BCB77" shadow="#338844" bg="#F0FFF4" border="#A8E6B0" title="Hasil yang Diharapkan"
+                                items={["Minggu 1: Laporan skrining","Bulan 1: Progres awal terlihat","Bulan 3: Peningkatan signifikan"]}/>
                         </div>
                     </div>
                 </section>
 
-                {/* CTA */}
-                <section className="py-20 bg-gradient-to-br from-[#3BBFAD] to-[#2A9989]">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                {/* ── CTA ── */}
+                <section style={{ padding:"80px 24px", background:"linear-gradient(135deg,#6BCB77 0%,#338844 100%)", position:"relative", overflow:"hidden" }}>
+                    {[["5%","22%","rgba(255,255,255,0.15)",80],["88%","65%","rgba(255,217,61,0.2)",100]].map(([x,y,c,s],i)=>(
+                        <div key={i} style={{ position:"absolute",left:x,top:y,width:Number(s),height:Number(s),borderRadius:"50%",background:c }}/>
+                    ))}
+                    {[["12%","30%","#FFD93D","18"],["88%","58%","white","14"]].map(([x,y,c,s],i)=>(
+                        <svg key={i} width={s} height={s} viewBox="0 0 20 20" fill={c} style={{ position:"absolute",left:x,top:y,opacity:0.5 }}>
+                            <polygon points="10,1 12.9,7.5 20,8.2 14.5,13.3 16.2,20 10,16.5 3.8,20 5.5,13.3 0,8.2 7.1,7.5"/>
+                        </svg>
+                    ))}
+                    <div style={{ maxWidth:700, margin:"0 auto", textAlign:"center", position:"relative", zIndex:2 }}>
+                        <h2 style={{ fontSize:"clamp(1.8rem,4vw,2.8rem)", fontWeight:900, color:"white", marginBottom:16, lineHeight:1.2 }}>
                             Siap Memulai Perjalanan Seperti Farel?
                         </h2>
-                        <p className="text-xl text-white/90 mb-10">
-                            Coba skrining gratis hari ini dan lihat bagaimana
-                            Lexit dapat membantu anak Anda
+                        <p style={{ fontSize:17, color:"rgba(255,255,255,0.92)", marginBottom:36, fontWeight:600 }}>
+                            Coba skrining gratis hari ini dan lihat bagaimana Lexit dapat membantu anak Anda
                         </p>
-                        <a
-                            href="/pricing"
-                            className="inline-flex items-center gap-2 px-10 py-5 bg-white text-[#3BBFAD] rounded-2xl font-bold text-lg hover:bg-[#F5A623] hover:text-white transition-all shadow-2xl hover:scale-105"
-                        >
-                            Mulai Gratis Sekarang
-                            <ArrowRight size={20} />
-                        </a>
+                        <Link href="/lexscan" style={{ display:"inline-flex", alignItems:"center", gap:10, padding:"16px 40px", background:"white", color:"#338844", fontWeight:900, fontSize:16, borderRadius:999, textDecoration:"none", boxShadow:"0 6px 0 #1A5C2A" }}>
+                            Mulai Gratis Sekarang <ArrowRight size={20}/>
+                        </Link>
                     </div>
                 </section>
             </div>
