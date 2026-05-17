@@ -1,16 +1,12 @@
 # 🧠 Lexit — Platform Deteksi Disleksia Berbasis AI
 
-<div align="center">
-
 **Platform AI untuk deteksi dini dan terapi disleksia pada anak Indonesia usia 5–12 tahun**
 
 [![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![React](https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![Inertia.js](https://img.shields.io/badge/Inertia.js-2.x-9553E9?style=for-the-badge&logo=inertia&logoColor=white)](https://inertiajs.com)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Gemini AI](https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://aistudio.google.com)
-
-</div>
+[![OpenRouter](https://img.shields.io/badge/OpenRouter-AI-6366F1?style=for-the-badge&logo=openai&logoColor=white)](https://openrouter.ai)
 
 ---
 
@@ -21,19 +17,19 @@
 - [Tech Stack](#-tech-stack)
 - [Prasyarat](#-prasyarat)
 - [Instalasi](#-instalasi)
-- [Konfigurasi](#%EF%B8%8F-konfigurasi)
-- [Menjalankan Aplikasi](#%EF%B8%8F-menjalankan-aplikasi)
+- [Konfigurasi](#️-konfigurasi)
+- [Menjalankan Aplikasi](#️-menjalankan-aplikasi)
 - [Struktur Project](#-struktur-project)
 - [Panduan Penggunaan](#-panduan-penggunaan)
-- [Konfigurasi Gemini AI](#-konfigurasi-gemini-ai)
-- [Database](#%EF%B8%8F-database)
+- [Konfigurasi AI (OpenRouter)](#-konfigurasi-ai-openrouter)
+- [Database](#️-database)
 - [Kontribusi](#-kontribusi)
 
 ---
 
 ## 🎯 Tentang Lexit
 
-Lexit adalah platform berbasis AI yang dirancang untuk membantu orang tua dan pendidik mendeteksi dini tanda-tanda disleksia pada anak Indonesia. Dengan memanfaatkan **Google Gemini AI**, Lexit dapat menganalisis tulisan tangan anak secara otomatis dan memberikan laporan perkembangan yang mudah dipahami.
+Lexit adalah platform berbasis AI yang dirancang untuk membantu orang tua dan pendidik mendeteksi dini tanda-tanda disleksia pada anak Indonesia. Dengan memanfaatkan **OpenRouter AI** (multi-provider), Lexit dapat menganalisis tulisan tangan anak secara otomatis dan memberikan laporan perkembangan yang mudah dipahami.
 
 > **Latar Belakang:** 5 juta pelajar Indonesia, 2 juta kasus disleksia per tahun, namun hanya ~4.000 psikolog klinis tersedia. Lexit hadir sebagai solusi accessible berbasis AI. Selaras dengan **SDG 3, 4, dan 10**.
 
@@ -41,15 +37,15 @@ Lexit adalah platform berbasis AI yang dirancang untuk membantu orang tua dan pe
 
 ## ✨ Fitur Utama
 
-| Fitur                       | Deskripsi                                                                             |
-| --------------------------- | ------------------------------------------------------------------------------------- |
-| 🔍 **LexScan**              | Upload foto tulisan tangan → Gemini AI menganalisis huruf per huruf → feedback instan |
-| 🎮 **LexPlay**              | Game susun huruf interaktif dengan sistem poin dan level                              |
-| 📊 **Parent Dashboard**     | Pantau riwayat scan dan skor game semua profil anak                                   |
-| 👶 **Multi-Profil Anak**    | Satu akun orang tua bisa kelola banyak profil anak dengan avatar emoji                |
-| 🔄 **Dual Mode**            | Switch antara Mode Orang Tua dan Mode Anak dengan mudah                               |
-| 📄 **Laporan PDF**          | Download laporan lengkap per sesi scan                                                |
-| 🤖 **Gemini AI + Fallback** | Exponential backoff otomatis + mock data saat API quota habis                         |
+| Fitur                           | Deskripsi                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| 🔍 **LexScan**                  | Upload foto tulisan tangan → AI menganalisis huruf per huruf → feedback instan |
+| 🎮 **LexPlay**                  | Game susun huruf interaktif dengan sistem poin dan level                       |
+| 📊 **Parent Dashboard**         | Pantau riwayat scan dan skor game semua profil anak                            |
+| 👶 **Multi-Profil Anak**        | Satu akun orang tua bisa kelola banyak profil anak dengan avatar emoji         |
+| 🔄 **Dual Mode**                | Switch antara Mode Orang Tua dan Mode Anak dengan mudah                        |
+| 📄 **Laporan PDF**              | Download laporan lengkap per sesi scan                                         |
+| 🤖 **OpenRouter AI + Fallback** | Exponential backoff otomatis + mock data saat API quota habis                  |
 
 ---
 
@@ -74,21 +70,25 @@ Lexit adalah platform berbasis AI yang dirancang untuk membantu orang tua dan pe
 
 ### AI
 
-- **Google Gemini API** — Analisis tulisan tangan & generate laporan narasi
-    - `gemini-2.0-flash-lite` → LexScan (cepat & hemat)
-    - `gemini-2.5-flash` → Generate laporan PDF
+- **OpenRouter API** — Multi-provider AI gateway untuk analisis tulisan tangan & generate laporan
+    - `nvidia/nemotron-nano-12b-v2-vl:free` → LexScan (multimodal vision, gratis)
+    - Model fallback otomatis jika quota habis
+
+> **Catatan Migrasi:** Project ini sebelumnya menggunakan Google Gemini API secara langsung. Sejak Mei 2026, layanan telah dimigrasikan ke **OpenRouter** untuk menghindari keterbatasan quota free tier Gemini dan mendukung multi-provider AI.
 
 ---
 
 ## 📦 Prasyarat
 
-| Software | Versi Minimum |
-| -------- | ------------- |
-| PHP      | 8.2+          |
-| Composer | 2.x           |
-| Node.js  | 18+           |
-| npm      | 9+            |
-| MySQL    | 8.0+          |
+| Software | Versi Minimum                     |
+| -------- | --------------------------------- |
+| PHP      | 8.2+ (dengan ekstensi `gd` aktif) |
+| Composer | 2.x                               |
+| Node.js  | 18+                               |
+| npm      | 9+                                |
+| MySQL    | 8.0+                              |
+
+> **Penting:** Pastikan ekstensi PHP `gd` aktif untuk kompresi gambar sebelum dikirim ke AI. Cek dengan: `php -r "echo extension_loaded('gd') ? 'GD aktif' : 'GD tidak aktif';"`
 
 ---
 
@@ -141,19 +141,23 @@ Buat database di MySQL terlebih dahulu:
 CREATE DATABASE lexit_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-### Gemini AI
+### OpenRouter AI ⭐
 
 ```env
-GEMINI_API_KEY=your_api_key_here
-GEMINI_MODEL_FLASH=gemini-2.0-flash-lite
-GEMINI_MODEL_PRO=gemini-2.5-flash
+GEMINI_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxx
+GEMINI_MODEL_FLASH=nvidia/nemotron-nano-12b-v2-vl:free
+GEMINI_MODEL_PRO=nvidia/nemotron-nano-12b-v2-vl:free
+GEMINI_BASE_URL=https://openrouter.ai/api/v1
 ```
 
-> **Cara mendapatkan API Key gratis:**
+> **Cara mendapatkan API Key gratis OpenRouter:**
 >
-> 1. Buka [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
-> 2. Klik **Create API key** → **Create API key in new project**
-> 3. Copy key → paste ke `.env`
+> 1. Daftar di [openrouter.ai](https://openrouter.ai) (bisa login dengan Google)
+> 2. Masuk ke **API Keys** → klik **+ New Key**
+> 3. Isi nama key (bebas), biarkan credit limit & expiration default
+> 4. Klik **Create** → copy key (`sk-or-v1-...`) → paste ke `.env`
+>
+> ✅ Tidak perlu kartu kredit untuk model gratis (`:free`)
 
 ### Queue & Cache
 
@@ -208,39 +212,38 @@ lexit-backend/
 │   │   ├── LexPlayController.php    # Game logic & simpan skor
 │   │   └── LexScanController.php    # Upload, analisis AI, download PDF
 │   ├── Http/Middleware/
-│   │   └── HandleInertiaRequests.php # Share auth data ke semua halaman
+│   │   └── HandleInertiaRequests.php
 │   ├── Models/
-│   │   ├── Child.php           # Profil anak
-│   │   ├── GameSession.php     # Riwayat sesi LexPlay
-│   │   ├── ScanResult.php      # Riwayat hasil LexScan
-│   │   └── User.php            # Akun orang tua
+│   │   ├── Child.php
+│   │   ├── GameSession.php
+│   │   ├── ScanResult.php
+│   │   └── User.php
 │   └── Services/
-│       └── GeminiService.php   # Gemini API wrapper + exponential backoff
-├── database/migrations/        # Semua migration tabel
+│       └── GeminiService.php   # OpenRouter API wrapper + exponential backoff + image compression
+├── database/migrations/
 ├── resources/
-│   ├── css/app.css             # Tailwind + Google Fonts
+│   ├── css/app.css
 │   ├── js/
-│   │   ├── app.tsx             # Inertia entry point
+│   │   ├── app.tsx
 │   │   ├── Components/
-│   │   │   └── Navigation.tsx  # Navbar dengan auth & child mode banner
+│   │   │   └── Navigation.tsx
 │   │   ├── Layouts/
-│   │   │   └── AppLayout.tsx   # Layout utama (Nav + Footer)
+│   │   │   └── AppLayout.tsx
 │   │   └── Pages/
-│   │       ├── Auth/           # Login, Register, Reset Password
-│   │       ├── Dashboard.tsx   # Parent dashboard
-│   │       ├── Home.tsx        # Landing page
-│   │       ├── LexPlay.tsx     # Game susun huruf
-│   │       ├── LexScan.tsx     # Analisis tulisan tangan
-│   │       ├── Features.tsx    # Halaman fitur
-│   │       ├── Pricing.tsx     # Paket harga
-│   │       ├── HowItWorks.tsx  # Cara kerja
-│   │       └── About.tsx       # Tentang tim
+│   │       ├── Auth/
+│   │       ├── Dashboard.tsx
+│   │       ├── Home.tsx
+│   │       ├── LexPlay.tsx
+│   │       ├── LexScan.tsx
+│   │       ├── Features.tsx
+│   │       ├── HowItWorks.tsx
+│   │       └── About.tsx
 │   └── views/
-│       ├── App.blade.php               # Root Blade template
-│       └── pdf/lexscan-report.blade.php # Template laporan PDF
+│       ├── App.blade.php
+│       └── pdf/lexscan-report.blade.php
 └── routes/
-    ├── web.php     # Semua route web
-    └── auth.php    # Route autentikasi
+    ├── web.php
+    └── auth.php
 ```
 
 ---
@@ -269,11 +272,13 @@ Dashboard → klik "Mode Anak" pada profil anak
   ↓ banner orange muncul di navbar
 Buka LexScan → upload foto tulisan tangan
   ↓ klik "Mulai Scan dengan AI"
-  ↓ tunggu 5–15 detik (Gemini memproses)
+  ↓ tunggu 5–30 detik (AI memproses + kompresi gambar otomatis)
 Hasil analisis per huruf muncul di panel kanan
   ↓ klik "Download Laporan" untuk simpan PDF
 Klik "Kembali ke Mode Orang Tua" → lihat riwayat di Dashboard
 ```
+
+> **Tips foto yang baik:** Ambil foto dengan pencahayaan cukup, kertas putih polos, tulisan terlihat jelas. Gambar akan dikompres otomatis ke maks 1024px sebelum dikirim ke AI.
 
 ### 4. Menggunakan LexPlay
 
@@ -299,31 +304,50 @@ Cek Dashboard → riwayat bermain muncul
 
 ---
 
-## 🤖 Konfigurasi Gemini AI
+## 🤖 Konfigurasi AI (OpenRouter)
+
+### Model yang Digunakan
+
+| Kebutuhan        | Model                                 | Keterangan                         |
+| ---------------- | ------------------------------------- | ---------------------------------- |
+| LexScan (vision) | `nvidia/nemotron-nano-12b-v2-vl:free` | Multimodal, support gambar, gratis |
+| Generate laporan | `nvidia/nemotron-nano-12b-v2-vl:free` | Text generation, gratis            |
+
+> Model gratis lain yang bisa digunakan: `google/gemma-4-31b-it:free` (jika nemotron penuh)
+
+### Mengganti Model
+
+Edit `.env`:
+
+```env
+GEMINI_MODEL_FLASH=google/gemma-4-31b-it:free
+GEMINI_MODEL_PRO=google/gemma-4-31b-it:free
+```
+
+Lalu jalankan:
+
+```bash
+php artisan config:clear
+```
 
 ### Exponential Backoff (Rate Limit Protection)
 
 Jika terkena rate limit (error 429), sistem otomatis retry:
 
 ```
-Request → 429? → tunggu 1 detik → retry
-              → 429? → tunggu 2 detik → retry
-              → 429? → tunggu 4 detik → retry
-              → masih gagal → tampilkan Mock Data [Mode Demo]
+Request → 429? → tunggu 3 detik  → retry ke-1
+               → 429? → tunggu 6 detik  → retry ke-2
+               → 429? → tunggu 12 detik → retry ke-3
+               → masih gagal → tampilkan Mock Data [Mode Demo]
 ```
 
 Tidak perlu konfigurasi tambahan — sudah berjalan otomatis.
 
-### Cek Model Tersedia di API Key Kamu
+### Cek Model Tersedia di OpenRouter
 
 ```bash
-php artisan tinker --execute="
-\$res = \Illuminate\Support\Facades\Http::get(
-    'https://generativelanguage.googleapis.com/v1beta/models',
-    ['key' => config('services.gemini.api_key')]
-);
-collect(\$res->json('models'))->pluck('name')->each(fn(\$m) => print(\$m . PHP_EOL));
-"
+curl "https://openrouter.ai/api/v1/models" \
+  -H "Authorization: Bearer sk-or-v1-xxxxxxxx" | grep '"id"'
 ```
 
 ---
@@ -364,6 +388,28 @@ php artisan tinker --execute="DB::connection()->getPdo(); echo 'DB OK';"
 
 ---
 
+## 🌿 Branch Tersedia
+
+| Branch                                             | Deskripsi                                                              | Status              |
+| -------------------------------------------------- | ---------------------------------------------------------------------- | ------------------- |
+| `main by daffa ramadhan`                           | Branch utama — integrasi OpenRouter AI, fitur LexScan & LexPlay stabil | ✅ Production Ready |
+| `feature/redesign-ui-kidsfriendly by syauqi ahnaf` | Redesign UI lebih ramah anak — warna, font, layout yang lebih playful  | 🚧 In Development   |
+
+### Cara Berpindah Branch
+
+```bash
+# Pindah ke branch main (default)
+git checkout main
+
+# Pindah ke branch redesign UI
+git checkout feature/redesign-ui-kidsfriendly
+
+# Lihat semua branch yang tersedia
+git branch -a
+```
+
+> **Catatan:** Setiap kali berpindah branch, jalankan `php artisan config:clear` dan `npm install` untuk memastikan dependencies dan konfigurasi sesuai branch yang aktif.
+
 ## 🤝 Kontribusi
 
 Project ini dikembangkan oleh **Tim Lavan**.
@@ -402,10 +448,6 @@ Dikembangkan untuk keperluan akademik dan sosial. Selaras dengan **SDG 3** (Kese
 
 ---
 
-<div align="center">
-
 Adaptasi Ide dari **Tim Lavan** juara pada lomba gemastik cabang perancangan kenyamanan pengguna, code dibuat oleh Kelompok x Mata Kuliah Teknologi Integrasi Sistem FILKOM UB untuk anak-anak Indonesia 🇮🇩
 
 _"Baca Lebih Mudah, Tumbuh Lebih Berani"_
-
-</div>
