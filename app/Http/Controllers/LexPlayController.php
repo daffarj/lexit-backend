@@ -50,10 +50,17 @@ class LexPlayController extends Controller
     {
         return [
             ['word' => 'BUKU',   'image' => '📚', 'hint' => 'Kamu membaca ini setiap hari di sekolah'],
+            ['word' => 'PENSIL', 'image' => '✏️', 'hint' => 'Alat yang kamu gunakan untuk menulis di buku'],
+            ['word' => 'BOLA',   'image' => '⚽', 'hint' => 'Kamu menendang ini saat bermain sepak bola'],
+            ['word' => 'SEPATU', 'image' => '👟', 'hint' => 'Kamu memakainya di kaki saat pergi ke sekolah'],
+            ['word' => 'MATAHARI','image' => '☀️', 'hint' => 'Benda langit yang bersinar terang di siang hari'],
+            ['word' => 'BURUNG', 'image' => '🐦', 'hint' => 'Hewan bersayap yang bernyanyi dan bisa terbang'],
+            ['word' => 'MOBIL',  'image' => '🚗', 'hint' => 'Kendaraan beroda empat yang melaju di jalan raya'],
             ['word' => 'KUCING', 'image' => '🐱', 'hint' => 'Hewan berkaki empat yang suka minum susu'],
             ['word' => 'APEL',   'image' => '🍎', 'hint' => 'Buah berwarna merah yang manis'],
             ['word' => 'RUMAH',  'image' => '🏠', 'hint' => 'Tempat kamu tinggal bersama keluarga'],
-            ['word' => 'BOLA',   'image' => '⚽', 'hint' => 'Kamu menendang ini saat bermain sepak bola'],
+            
         ];
     }
+
 }

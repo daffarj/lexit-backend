@@ -19,4 +19,6 @@
     },
     "include": ["resources/js/**/*"],
     "exclude": ["node_modules", "public"]
+
+    
 }

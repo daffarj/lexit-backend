@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, JSX } from "react";
 import { router } from "@inertiajs/react";
 import {
     Trophy,
@@ -46,6 +46,32 @@ const DEFAULT_CHALLENGES: WordChallenge[] = [
         word: "BOLA",
         image: "bola",
         hint: "Kamu menendang ini saat bermain sepak bola",
+    },
+    // --- Data Tambahan Baru ---
+    {
+        word: "PENSIL",
+        image: "pensil",
+        hint: "Alat yang kamu gunakan untuk menulis di buku",
+    },
+    {
+        word: "SEPATU",
+        image: "sepatu",
+        hint: "Kamu memakainya di kaki saat pergi ke sekolah",
+    },
+    {
+        word: "MATAHARI",
+        image: "matahari",
+        hint: "Benda langit yang bersinar terang di siang hari",
+    },
+    {
+        word: "BURUNG",
+        image: "burung",
+        hint: "Hewan bersayap yang bernyanyi dan bisa terbang",
+    },
+    {
+        word: "MOBIL",
+        image: "mobil",
+        hint: "Kendaraan beroda empat yang melaju di jalan raya",
     },
 ];
 
@@ -228,6 +254,94 @@ function WordIllustration({ word }: { word: string }) {
                     fill="#CC4444"
                     opacity="0.3"
                 />
+            </svg>
+        ),
+        PENSIL: (
+            <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                <g transform="rotate(-40 60 60)">
+                    {/* Badan Pensil */}
+                    <rect x="50" y="30" width="20" height="50" fill="#FFD93D" />
+                    <rect x="55" y="30" width="10" height="50" fill="#FFAB40" opacity="0.3" />
+                    {/* Ujung Kayu */}
+                    <polygon points="50,80 70,80 60,95" fill="#FFCC80" />
+                    {/* Mata Pensil (Grafit) */}
+                    <polygon points="57,90 63,90 60,95" fill="#2C2C2C" />
+                    {/* Besi Penghapus */}
+                    <rect x="50" y="20" width="20" height="10" fill="#B0BEC5" />
+                    <rect x="50" y="22" width="20" height="2" fill="#90A4AE" />
+                    <rect x="50" y="26" width="20" height="2" fill="#90A4AE" />
+                    {/* Penghapus Pink */}
+                    <path d="M50 20 L70 20 L70 14 Q70 10 60 10 Q50 10 50 14 Z" fill="#FF8A8A" />
+                </g>
+            </svg>
+        ),
+        SEPATU: (
+            <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                {/* Sol Sepatu */}
+                <rect x="20" y="80" width="80" height="12" rx="6" fill="#E5E7EB" />
+                <rect x="20" y="80" width="80" height="4" fill="#FFFFFF" />
+                {/* Badan Sepatu */}
+                <path d="M25 80 L25 55 Q25 45 35 45 L50 45 Q70 45 80 60 L95 70 L95 80 Z" fill="#4D96FF" />
+                {/* Ujung Putih (Toe) */}
+                <path d="M75 62 L95 72 L95 80 L75 80 Z" fill="#FFFFFF" opacity="0.9" />
+                {/* Garis Dekorasi */}
+                <path d="M35 55 Q50 65 65 75" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" fill="none" />
+                {/* Tali Sepatu */}
+                <line x1="45" y1="45" x2="55" y2="35" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
+                <line x1="55" y1="47" x2="65" y2="37" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
+            </svg>
+        ),
+        MATAHARI: (
+            <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                {/* Cahaya Belakang (Glow) */}
+                <circle cx="60" cy="60" r="34" fill="#FFD93D" opacity="0.3" />
+                {/* Sinar Matahari */}
+                <path d="M60 16 v12 M60 92 v12 M16 60 h12 M92 60 h12 M30 30 l8 8 M82 82 l8 8 M30 90 l8 -8 M82 38 l8 -8" stroke="#FFAB40" strokeWidth="8" strokeLinecap="round" />
+                {/* Badan Matahari */}
+                <circle cx="60" cy="60" r="24" fill="#FFD93D" />
+                <circle cx="60" cy="60" r="20" fill="#FFE566" />
+                {/* Kacamata Hitam (Biar Keren) */}
+                <path d="M46 56 Q52 56 52 62 Q46 66 40 62 Q40 56 46 56 Z" fill="#1A1A2E" />
+                <path d="M74 56 Q80 56 80 62 Q74 66 68 62 Q68 56 74 56 Z" fill="#1A1A2E" />
+                <line x1="52" y1="58" x2="68" y2="58" stroke="#1A1A2E" strokeWidth="3" />
+            </svg>
+        ),
+        BURUNG: (
+            <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                {/* Ekor */}
+                <polygon points="40,60 20,46 24,70" fill="#FF6B6B" />
+                {/* Badan & Kepala */}
+                <circle cx="60" cy="56" r="24" fill="#FF8888" />
+                {/* Paruh */}
+                <polygon points="80,52 96,56 80,60" fill="#FFD93D" />
+                {/* Mata */}
+                <circle cx="70" cy="48" r="4" fill="#1A1A2E" />
+                <circle cx="71.5" cy="46.5" r="1.5" fill="#FFFFFF" />
+                {/* Sayap */}
+                <path d="M 45 56 Q 60 76 75 56 Q 60 50 45 56 Z" fill="#FFFFFF" opacity="0.9" />
+                <path d="M 45 56 Q 60 76 75 56" stroke="#CC4444" strokeWidth="2" fill="none" opacity="0.3" />
+            </svg>
+        ),
+        MOBIL: (
+            <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                {/* Atap Mobil */}
+                <path d="M 35 60 L 45 40 L 75 40 L 85 60 Z" fill="#6BCB77" />
+                {/* Jendela Kiri */}
+                <path d="M 46 44 L 58 44 L 58 58 L 38 58 Z" fill="#E5F3FF" />
+                {/* Jendela Kanan */}
+                <path d="M 62 44 L 74 44 L 82 58 L 62 58 Z" fill="#E5F3FF" />
+                {/* Badan Utama */}
+                <rect x="20" y="60" width="80" height="24" rx="6" fill="#338844" />
+                <rect x="20" y="60" width="80" height="10" fill="#6BCB77" />
+                {/* Lampu Depan & Belakang */}
+                <rect x="94" y="66" width="6" height="10" rx="2" fill="#FFD93D" />
+                <rect x="20" y="66" width="4" height="10" rx="2" fill="#CC4444" />
+                {/* Ban Kiri */}
+                <circle cx="40" cy="84" r="12" fill="#1A1A2E" />
+                <circle cx="40" cy="84" r="5" fill="#E5E7EB" />
+                {/* Ban Kanan */}
+                <circle cx="80" cy="84" r="12" fill="#1A1A2E" />
+                <circle cx="80" cy="84" r="5" fill="#E5E7EB" />
             </svg>
         ),
         RUMAH: (
@@ -902,7 +1016,7 @@ export default function LexPlay({
                                                         borderRadius: 20,
                                                         fontWeight: 900,
                                                         fontSize: 28,
-                                                        border: "none",
+                                                    
                                                         cursor:
                                                             letter === ""
                                                                 ? "not-allowed"
