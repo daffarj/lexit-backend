@@ -45,7 +45,7 @@ class GeminiService
         while ($attempt <= $this->maxRetries) {
             $response = Http::timeout(60)
                 ->withHeaders([
-                    'Authorization' => 'Bearer ' . $this->apiKey,  // ← INI yang kurang!
+                    'Authorization' => 'Bearer ' . $this->apiKey,  
                     'Content-Type'  => 'application/json',
                     'HTTP-Referer'  => config('app.url'),
                     'X-Title'       => config('app.name'),
@@ -146,7 +146,7 @@ class GeminiService
     return $decoded;
 }
 
-// Jika gambar terlalu besar, kompres agar tetap di bawah 4MB (limit Gemini)
+// Jika gambar terlalu besar, kompres agar tetap di bawah 4MB 
 // private function compressBase64Image(string $base64Image, string $mimeType): string
 // {
 //     $imageData = base64_decode($base64Image);
