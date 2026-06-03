@@ -198,7 +198,7 @@ public function generateReport(array $childData): string
         'temperature' => 0.4,
     ];
 
-    $response = Http::timeout(30)
+    $response = Http::timeout(120)
     ->withHeaders([
         'Authorization' => 'Bearer ' . $this->apiKey,
         'Content-Type'  => 'application/json',

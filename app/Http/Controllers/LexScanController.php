@@ -24,6 +24,8 @@ class LexScanController extends Controller
 
     public function analyze(Request $request, GeminiService $gemini): Response
     {
+        set_time_limit(120);
+        
         $request->validate([
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240',
         ]);
