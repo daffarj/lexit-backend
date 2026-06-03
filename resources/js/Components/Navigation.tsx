@@ -93,16 +93,7 @@ export default function Navigation() {
 
                         {/* Logo */}
                         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-                            <FoxLogo />
-                            <div>
-                                <div style={{
-                                    fontSize: 22, fontWeight: 900, color: "#FF6B6B", lineHeight: 1,
-                                    letterSpacing: "-0.5px",
-                                }}>LEXIT</div>
-                                <div style={{ fontSize: 9, color: "#888", fontWeight: 700, letterSpacing: 1.5, lineHeight: 1, textTransform: "uppercase" }}>
-                                    Belajar Bareng!
-                                </div>
-                            </div>
+                            <img src="/LEXIT LOGO.svg" alt="Lexit Logo" style={{ width: 72, height: 72 }} />
                         </Link>
 
                         {/* Desktop Nav */}

@@ -52,12 +52,8 @@ export default function Footer() {
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 40 }}>
                     {/* Brand */}
                     <div>
-                        <div style={{ display: "flex", alignItems: "flex-end", gap: 12, marginBottom: 16 }}>
-                            <PenguinFooter/>
-                            <div>
-                                <div style={{ fontSize: 26, fontWeight: 900, color: "#FF6B6B", letterSpacing: -0.5 }}>LEXIT</div>
-                                <div style={{ fontSize: 11, color: "#aaa", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>Baca Lebih Berani</div>
-                            </div>
+                        <div style={{ display: "flex", alignItems: "flex-end", gap: 12, marginBottom: 4 }}>
+                            <img src="/LEXIT LOGO.svg" alt="Lexit Logo" style={{ width: 72, height: 72 }} />
                         </div>
                         <p style={{ fontSize: 13, color: "#9CA3AF", lineHeight: 1.7 }}>
                             Platform deteksi disleksia berbasis AI yang menyenangkan untuk anak-anak Indonesia.
