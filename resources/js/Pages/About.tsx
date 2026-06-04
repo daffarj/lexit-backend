@@ -149,10 +149,10 @@ export default function About() {
                             <p style={{ fontSize:16, color:"#666", fontWeight:600 }}>Dibuat dengan cinta untuk anak-anak Indonesia</p>
                         </div>
                         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(170px,1fr))", gap:20 }}>
-                            <TeamCard name="Daffa RJ" role="Fullstack Dev" color="#FF6B6B" shadow="#CC4444" bg="#FFF5F5" border="#FFAAAA" initial="D"/>
-                            <TeamCard name="Anggota 2" role="UI/UX Designer" color="#4D96FF" shadow="#1A5FCC" bg="#EFF6FF" border="#BFDBFE" initial="A"/>
-                            <TeamCard name="Anggota 3" role="AI Engineer" color="#6BCB77" shadow="#338844" bg="#F0FFF4" border="#A8E6B0" initial="A"/>
-                            <TeamCard name="Anggota 4" role="Psikolog Klinis" color="#FFD93D" shadow="#CC9900" bg="#FFFDE7" border="#FFE566" initial="A"/>
+                            <TeamCard name="Daffa Ramadhan" role="AI Engineer" color="#FF6B6B" shadow="#CC4444" bg="#FFF5F5" border="#FFAAAA" initial="D"/>
+                            <TeamCard name="Syauqi Ahnaf" role="Tim Frontend" color="#4D96FF" shadow="#1A5FCC" bg="#EFF6FF" border="#BFDBFE" initial="A"/>
+                            <TeamCard name="Made Puja" role="Tim Backend" color="#6BCB77" shadow="#338844" bg="#F0FFF4" border="#A8E6B0" initial="A"/>
+                            <TeamCard name="Hilal Immawan" role="Tim Backend" color="#FFD93D" shadow="#CC9900" bg="#FFFDE7" border="#FFE566" initial="A"/>
                         </div>
                     </div>
                 </section>
